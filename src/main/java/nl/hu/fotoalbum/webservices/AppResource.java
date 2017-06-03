@@ -1,7 +1,5 @@
 package nl.hu.fotoalbum.webservices;
 
-import java.util.Date;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -29,16 +27,15 @@ public class AppResource {
 		}
 		
 		Session session = factory.getCurrentSession();
-		
-		Album a = new Album("Title", "Desc", "P", new Date());
 
         session.beginTransaction();
-        int id = (int) session.save(a);
-        Album b = session.get(Album.class, id);
+        Album a = session.get(Album.class, 3);
+        System.out.println(a);
+        System.out.println(a.getSharedUserIds());
         session.getTransaction().commit();
         
-        System.out.println(b);
-	
+        factory.close();
+        
 		return "<h1>app</h1>";
 	}
 }

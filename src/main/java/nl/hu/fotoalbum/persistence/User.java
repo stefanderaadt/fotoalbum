@@ -1,7 +1,11 @@
 package nl.hu.fotoalbum.persistence;
 
+import java.util.List;
+
 import javax.persistence.*;
 
+@Entity
+@Table(name = "user")
 public class User {
 	@Id
 	@Column(name = "id")
@@ -19,6 +23,9 @@ public class User {
 
 	@Column(name = "password")
 	private String password;
+	
+	@OneToMany(mappedBy="user")
+	private List<Album> albums;
 
 	public User() {
 	}
@@ -61,5 +68,20 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+    @JoinColumn(name="user_id")
+	public List<Album> getAlbums(){
+		return albums;
+	}
+    
+    public void setAlbums(List<Album> albums){
+    	this.albums = albums;
+    }
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", password=" + password + ", albums=" + albums + "]";
 	}
 }

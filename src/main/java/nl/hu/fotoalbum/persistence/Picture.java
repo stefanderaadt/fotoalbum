@@ -2,35 +2,37 @@ package nl.hu.fotoalbum.persistence;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "picture")
 public class Picture {
-	@Id
-	@Column(name = "album_id")
-	private Integer albumId;
-
 	@Id
 	@Column(name = "id")
 	private Integer id;
 
 	@Column(name = "path")
 	private String path;
+	
+	@ManyToOne
+    @JoinColumn(name="album_id")
+    private Album album;
 
 	public Picture() {
 	}
 
-	public Picture(Integer albumId, Integer id, String path) {
-		this.albumId = albumId;
+	public Picture(Album album, Integer id, String path) {
+		this.album = album;
 		this.id = id;
 		this.path = path;
 	}
-
-	public Integer getAlbumId() {
-		return albumId;
+	
+	public Album getAlbum() {
+		return album;
 	}
 
-	public void setAlbumId(Integer albumId) {
-		this.albumId = albumId;
+	public void setAlbum(Album album) {
+		this.album = album;
 	}
-
+	
 	public Integer getId() {
 		return id;
 	}
@@ -45,5 +47,10 @@ public class Picture {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	@Override
+	public String toString() {
+		return "Picture [id=" + id + ", path=" + path + "]";
 	}
 }
