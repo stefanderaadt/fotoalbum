@@ -1,5 +1,5 @@
 package nl.hu.fotoalbum.persistence;
 
-public class UserDAO {
+public class UserDAO{
 
 }

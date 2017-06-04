@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import nl.hu.fotoalbum.persistence.Album;
+import nl.hu.fotoalbum.persistence.AlbumDAO;
 
 @Path("/hello")
 public class AppResource {
@@ -19,7 +20,7 @@ public class AppResource {
 	//@RolesAllowed("admin")
 	@Produces(MediaType.TEXT_HTML)
 	public String getPage() { 
-		try {
+		/*try {
 			factory = new Configuration().configure().buildSessionFactory();
 		} catch (Throwable ex) {
 			System.err.println("Failed to create sessionFactory object." + ex);
@@ -34,7 +35,11 @@ public class AppResource {
         System.out.println(a.getSharedUserIds());
         session.getTransaction().commit();
         
-        factory.close();
+        factory.close();*/
+		
+		AlbumDAO albumDAO = new AlbumDAO();
+		
+		System.out.println(albumDAO.get(Album.class, 1));
         
 		return "<h1>app</h1>";
 	}
