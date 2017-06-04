@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 
 public class BaseDAO {
 	private static SessionFactory sessionFactory;
+	private static Session session;
 
 	public BaseDAO() {
 		try {
@@ -20,23 +21,31 @@ public class BaseDAO {
 		}
 	}
 
-	public static SessionFactory getSessionFactory() {
+	public SessionFactory getSessionFactory() {
 		return sessionFactory;
+	}
+	
+	public Session startSession(){
+		session = sessionFactory.openSession();
+		return session;
+	}
+	
+	public void stopSession(){
+		if(session.isOpen()) session.close();
 	}
 
 	public <T> T save(final T o) {
-		return (T) sessionFactory.getCurrentSession().save(o);
+		return (T) session.save(o);
 	}
 
 	public void delete(final Object object) {
-		sessionFactory.getCurrentSession().delete(object);
+		session.delete(object);
 	}
 
 	public <T> T get(final Class<T> type, final int id) {
-		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		
-		Object o = sessionFactory.getCurrentSession().get(type, id);
+		Object o = session.get(type, id);
 		
 		tx.commit();
 		
@@ -44,15 +53,14 @@ public class BaseDAO {
 	}
 
 	public <T> T merge(final T o) {
-		return (T) sessionFactory.getCurrentSession().merge(o);
+		return (T) session.merge(o);
 	}
 
 	public <T> void saveOrUpdate(final T o) {
-		sessionFactory.getCurrentSession().saveOrUpdate(o);
+		session.saveOrUpdate(o);
 	}
 
 	public <T> List<T> getAll(final Class<T> type) {
-		final Session session = sessionFactory.getCurrentSession();
 		final Criteria crit = session.createCriteria(type);
 		return crit.list();
 	}
