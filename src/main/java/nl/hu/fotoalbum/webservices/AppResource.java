@@ -6,7 +6,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.hibernate.SessionFactory;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.AlbumDAO;
@@ -19,17 +20,12 @@ public class AppResource {
 	@GET
 	//@RolesAllowed("admin")
 	@Produces(MediaType.TEXT_HTML)
-	public String getPage() { 		
+	public String getPage() throws JsonProcessingException {
 		AlbumDAO albumDAO = new AlbumDAO();
-		Gson gson = new Gson();
-		
-		albumDAO.startSession();
-		Album a = albumDAO.get(Album.class, 1);
-		
-		String json = gson.toJson(a);
-		
-		albumDAO.stopSession();
-		
-		return json;
+		ObjectMapper mapper = new ObjectMapper();
+
+		Album a = albumDAO.get(Album.class, 3);
+
+		return mapper.writeValueAsString(a);
 	}
 }

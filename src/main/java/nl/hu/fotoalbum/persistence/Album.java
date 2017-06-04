@@ -6,6 +6,9 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "album")
 public class Album {
@@ -28,18 +31,27 @@ public class Album {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
 	
-	//@Column
 	@OneToMany(mappedBy="album")
+	@JsonBackReference
 	private List<Picture> pictures;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")
+	@JsonIgnore
 	private User user;
 	
 	@ElementCollection
 	@CollectionTable(name="hassharedusers", joinColumns=@JoinColumn(name="album_id"))
 	@Column(name="user_id")
 	public Set<Integer> sharedUserIds;
+	
+	/*@ManyToMany
+	@JoinTable(
+	    name="hassharedusers",
+	    joinColumns = @JoinColumn(name="album_id"),
+	    inverseJoinColumns = @JoinColumn(name="user_id")
+	)
+	public Set<User> sharedUsers;*/
 	
 	public Album(){}
 	
@@ -110,7 +122,7 @@ public class Album {
 
 	public Set<Integer> getSharedUserIds() {
 		//Return null if sharetype isn't U
-		if (shareType != "U") return null;
+		if (!"U".equals(shareType)) return null;
 		
 		return sharedUserIds;
 	}

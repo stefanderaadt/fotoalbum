@@ -2,6 +2,9 @@ package nl.hu.fotoalbum.persistence;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "picture")
 public class Picture {
@@ -14,6 +17,8 @@ public class Picture {
 	
 	@ManyToOne
     @JoinColumn(name="album_id")
+	@JsonManagedReference
+	@JsonIgnore
     private Album album;
 
 	public Picture() {

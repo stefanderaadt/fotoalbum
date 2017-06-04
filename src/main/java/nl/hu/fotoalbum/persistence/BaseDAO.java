@@ -9,31 +9,33 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 public class BaseDAO {
-	private static SessionFactory sessionFactory;
 	private static Session session;
-
-	public BaseDAO() {
+	private static Transaction transaction;
+	
+	private static SessionFactory getSessionFactory(){
+		SessionFactory sessionFactory = null;
+		
 		try {
 			sessionFactory = new Configuration().configure().buildSessionFactory();
 		} catch (Throwable ex) {
 			System.err.println("Failed to create sessionFactory object." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
-	}
-
-	public SessionFactory getSessionFactory() {
+		
 		return sessionFactory;
 	}
 	
-	public Session startSession(){
-		session = sessionFactory.openSession();
-		return session;
+	public static void startSession(){
+		session = getSessionFactory().openSession();
+		//transaction = session.beginTransaction();
 	}
 	
-	public void stopSession(){
+	public static void stopSession(){
+		//if(transaction.isActive()) transaction.commit();
 		if(session.isOpen()) session.close();
 	}
-
+	
+	//Default DAO functions
 	public <T> T save(final T o) {
 		return (T) session.save(o);
 	}
@@ -42,12 +44,8 @@ public class BaseDAO {
 		session.delete(object);
 	}
 
-	public <T> T get(final Class<T> type, final int id) {
-		Transaction tx = session.beginTransaction();
-		
+	public <T> T get(final Class<T> type, final int id) {		
 		Object o = session.get(type, id);
-		
-		tx.commit();
 		
 		return (T) o;
 	}
@@ -63,5 +61,14 @@ public class BaseDAO {
 	public <T> List<T> getAll(final Class<T> type) {
 		final Criteria crit = session.createCriteria(type);
 		return crit.list();
+	}
+	
+	//Getters
+	public Session getSession(){
+		return session;
+	}
+	
+	public Transaction getTransaction(){
+		return transaction;
 	}
 }
