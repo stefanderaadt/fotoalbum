@@ -36,13 +36,8 @@ public class BaseDAO {
 	}
 	
 	//Default DAO functions
-	public <T> T save(final T o) {
-		
-		int id = (Integer) session.save(o);
-		
-		System.out.println(id);
-		
-		return (T) session.get(o.getClass(), id);
+	public <T> Integer save(final T o) {
+		return (Integer) session.save(o);
 	}
 
 	public void delete(final Object object) {

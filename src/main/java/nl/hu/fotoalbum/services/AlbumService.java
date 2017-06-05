@@ -8,7 +8,7 @@ import nl.hu.fotoalbum.persistence.AlbumDAO;
 public class AlbumService {
 	AlbumDAO albumDAO = new AlbumDAO();
 	
-	public Album save(Album a){
+	public Integer save(Album a){
 		//Save album and generate random code
 		String code = generateCode(8);
 		while(!albumDAO.getByCode(code).isEmpty()){

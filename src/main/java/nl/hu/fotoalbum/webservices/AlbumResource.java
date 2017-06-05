@@ -1,15 +1,22 @@
 package nl.hu.fotoalbum.webservices;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.Part;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.media.multipart.BodyPart;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
 
 import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.AlbumDAO;
@@ -22,14 +29,33 @@ public class AlbumResource {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public String postAlbum(@FormParam("title") String title, @FormParam("description") String description,
-			@FormParam("shareType") String shareType, @FormDataParam("pictures") InputStream picturesIS,
-			@FormDataParam("pictures") FormDataContentDisposition picturesDetail) throws JsonProcessingException {
+			@FormParam("shareType") String shareType, @FormDataParam("file") FormDataBodyPart pictureParts) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 
-		//Album a = new Album(title, description, shareType, ServiceProvider.getUserService().get(1));
+		Album a = new Album(title, description, shareType, ServiceProvider.getUserService().get(1));
 
-		//a = ServiceProvider.getAlbumService().save(a);
+		int albumId = ServiceProvider.getAlbumService().save(a);
+		
+		a = ServiceProvider.getAlbumService().get(albumId);
+		
+        for(BodyPart i: pictureParts.getParent().getBodyParts()){
+        	String name = UUID.randomUUID().toString()+".jpg";
+            InputStream fileContent = i.getInputStream();
+            OutputStream outPut = new FileOutputStream(new File(path+name));
 
+            int read = 0;
+            final byte[] bytes = new byte[1024];
+
+            while ((read = fileContent.read(bytes)) != -1) {
+                outPut.write(bytes, 0, read);
+            }
+            
+            test += "<img src='"+path+name+"'>";
+            
+            outPut.close();
+            fileContent.close();
+        }
+		
 		return "hallo";//mapper.writeValueAsString(a);
 	}
 
