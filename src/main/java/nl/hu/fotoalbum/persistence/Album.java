@@ -18,9 +18,12 @@ public class Album {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
+	@Column(name = "code")
+	private String code;
+	
 	@Column(name = "title")
 	private String title;
-	
+
 	@Column(name = "description")
 	private String description;
 	
@@ -45,30 +48,26 @@ public class Album {
 	@Column(name="user_id")
 	public Set<Integer> sharedUserIds;
 	
-	/*@ManyToMany
-	@JoinTable(
-	    name="hassharedusers",
-	    joinColumns = @JoinColumn(name="album_id"),
-	    inverseJoinColumns = @JoinColumn(name="user_id")
-	)
-	public Set<User> sharedUsers;*/
-	
 	public Album(){}
 	
-	public Album(String title, String description, String shareType, Date createdAt, User user) {
+	public Album(String title, String description, String shareType, User user) {
 		this.title = title;
 		this.description = description;
 		this.shareType = shareType;
-		this.createdAt = createdAt;
 		this.user = user;
+		this.createdAt = new Date();
 	}
 
 	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getTitle() {
@@ -133,7 +132,8 @@ public class Album {
 
 	@Override
 	public String toString() {
-		return "Album [id=" + id + ", title=" + title + ", description=" + description + ", shareType=" + shareType
-				+ ", createdAt=" + createdAt + ", pictures=" + pictures + "]";
+		return "Album [id=" + id + ", code=" + code + ", title=" + title + ", description=" + description
+				+ ", shareType=" + shareType + ", createdAt=" + createdAt
+				+ ", sharedUserIds=" + sharedUserIds + "]";
 	}
 }

@@ -9,8 +9,8 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 public class BaseDAO {
-	private static Session session;
-	private static Transaction transaction;
+	protected static Session session;
+	protected static Transaction transaction;
 	
 	private static SessionFactory getSessionFactory(){
 		SessionFactory sessionFactory = null;
@@ -37,7 +37,12 @@ public class BaseDAO {
 	
 	//Default DAO functions
 	public <T> T save(final T o) {
-		return (T) session.save(o);
+		
+		int id = (Integer) session.save(o);
+		
+		System.out.println(id);
+		
+		return (T) session.get(o.getClass(), id);
 	}
 
 	public void delete(final Object object) {

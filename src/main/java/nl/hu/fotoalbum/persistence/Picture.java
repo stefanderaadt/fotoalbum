@@ -12,8 +12,11 @@ public class Picture {
 	@Column(name = "id")
 	private Integer id;
 
-	@Column(name = "path")
-	private String path;
+	@Column(name = "code")
+	private String code;
+	
+	@Column(name = "type")
+	private String type;
 	
 	@ManyToOne
     @JoinColumn(name="album_id")
@@ -24,10 +27,10 @@ public class Picture {
 	public Picture() {
 	}
 
-	public Picture(Album album, Integer id, String path) {
+	public Picture(Album album, Integer id, String type) {
 		this.album = album;
 		this.id = id;
-		this.path = path;
+		this.type = type;
 	}
 	
 	public Album getAlbum() {
@@ -42,20 +45,24 @@ public class Picture {
 		return id;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String getCode() {
+		return code;
 	}
 
-	public String getPath() {
-		return path;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@Override
 	public String toString() {
-		return "Picture [id=" + id + ", path=" + path + "]";
+		return "Picture [id=" + id + ", type=" + type + "]";
 	}
 }
