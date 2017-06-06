@@ -23,6 +23,10 @@ public class AlbumService {
 		return albumDAO.get(Album.class, id);
 	}
 	
+	public Album getByCode(String code){
+		return albumDAO.getByCode(code).get(0);
+	}
+	
 	public void saveOrUpdate(Album a){
 		albumDAO.saveOrUpdate(a);
 	}

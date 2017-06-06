@@ -71,24 +71,16 @@ public class AlbumResource {
 
 		return mapper.writeValueAsString(a);
 	}
-	
-	@POST
-	@Path("upload")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public String testUpload(@FormDataParam("pictures") FormDataBodyPart pictureParts){
-		
-		
-		
-		return "het werkt";
-	}
 
 	@GET
-	@Path("{id}")
+	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAlbum(@PathParam("id") int id) throws JsonProcessingException {
+	public String getAlbum(@PathParam("code") String code) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 
 		Album a = ServiceProvider.getAlbumService().get(id);
+		
+		System.out.println(ServiceProvider.getPictureService().getNextId(a));
 
 		return mapper.writeValueAsString(a);
 	}

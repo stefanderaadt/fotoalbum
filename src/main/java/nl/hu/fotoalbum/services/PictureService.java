@@ -2,6 +2,7 @@ package nl.hu.fotoalbum.services;
 
 import java.util.Random;
 
+import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.Picture;
 import nl.hu.fotoalbum.persistence.PictureDAO;
 
@@ -36,5 +37,9 @@ public class PictureService {
 		}
 		
 		return sb.toString();
+	}
+	
+	public Integer getNextId(Album a) {
+		return pictureDAO.getNextId(a);
 	}
 }
