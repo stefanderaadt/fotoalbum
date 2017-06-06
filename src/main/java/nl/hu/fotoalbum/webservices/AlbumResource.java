@@ -12,6 +12,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.media.multipart.BodyPart;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.AlbumDAO;
+import nl.hu.fotoalbum.persistence.Picture;
 import nl.hu.fotoalbum.services.ServiceProvider;
 
 @Path("/album")
@@ -28,35 +30,56 @@ public class AlbumResource {
 	// @RolesAllowed("user")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public String postAlbum(@FormParam("title") String title, @FormParam("description") String description,
-			@FormParam("shareType") String shareType, @FormDataParam("file") FormDataBodyPart pictureParts) throws JsonProcessingException {
+			@FormParam("shareType") String shareType, @FormDataParam("pictures") FormDataBodyPart pictureParts) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 
 		Album a = new Album(title, description, shareType, ServiceProvider.getUserService().get(1));
 
 		int albumId = ServiceProvider.getAlbumService().save(a);
-		
+
 		a = ServiceProvider.getAlbumService().get(albumId);
-		
-        for(BodyPart i: pictureParts.getParent().getBodyParts()){
-        	String name = UUID.randomUUID().toString()+".jpg";
-            InputStream fileContent = i.getInputStream();
-            OutputStream outPut = new FileOutputStream(new File(path+name));
 
-            int read = 0;
-            final byte[] bytes = new byte[1024];
+		/*for (BodyPart i : pictureParts.getParent().getBodyParts()) {
+			
+			ContentDisposition content = i.getContentDisposition();
+			
+			Picture p = new Picture(a, content.getType());
 
-            while ((read = fileContent.read(bytes)) != -1) {
-                outPut.write(bytes, 0, read);
-            }
-            
-            test += "<img src='"+path+name+"'>";
-            
-            outPut.close();
-            fileContent.close();
-        }
+			int pictureId = ServiceProvider.getPictureService().save(p);
+
+			p = ServiceProvider.getPictureService().get(pictureId);
+
+			String name = p.getCode() + "." + p.getType();
+
+			try (OutputStream outPut = new FileOutputStream(
+					new File("C:\\Users\\Stefan\\Documents\\School\\WAC\\test" + name));
+					InputStream fileContent = i.getEntityAs(InputStream.class)) {
+				
+				int read = 0;
+				final byte[] bytes = new byte[1024];
+
+				while ((read = fileContent.read(bytes)) != -1) {
+					outPut.write(bytes, 0, read);
+				}
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}*/
+
+		return mapper.writeValueAsString(a);
+	}
+	
+	@POST
+	@Path("upload")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public String testUpload(@FormDataParam("pictures") FormDataBodyPart pictureParts){
 		
-		return "hallo";//mapper.writeValueAsString(a);
+		
+		
+		return "het werkt";
 	}
 
 	@GET

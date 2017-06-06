@@ -27,9 +27,8 @@ public class Picture {
 	public Picture() {
 	}
 
-	public Picture(Album album, Integer id, String type) {
+	public Picture(Album album, String type) {
 		this.album = album;
-		this.id = id;
 		this.type = type;
 	}
 	

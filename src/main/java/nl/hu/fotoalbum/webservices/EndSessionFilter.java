@@ -14,6 +14,7 @@ public class EndSessionFilter implements ContainerResponseFilter{
 
 	@Override
 	public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException {
+		System.out.println("stop");
 		BaseDAO.stopSession();
 	}
 
