@@ -1,5 +1,6 @@
 package nl.hu.fotoalbum.services;
 
+import java.io.File;
 import java.util.Random;
 
 import nl.hu.fotoalbum.persistence.Album;
@@ -7,6 +8,8 @@ import nl.hu.fotoalbum.persistence.Picture;
 import nl.hu.fotoalbum.persistence.PictureDAO;
 
 public class PictureService {
+	final private String uploadFolder = "C:/Users/Stefan/Documents/School/WAC/uploads/";
+	
 	PictureDAO pictureDAO = new PictureDAO();
 	
 	public Integer save(Picture p){
@@ -26,7 +29,20 @@ public class PictureService {
 	}
 	
 	public void delete(Picture p){
-		pictureDAO.delete(p);
+		
+		File file = new File(uploadFolder+p.getAlbum().getCode()+"/"+p.getCode()+"."+p.getType());
+		
+		if (file.delete()){
+			pictureDAO.delete(p);
+		}
+	}
+	
+	public Integer getNextId(Album a) {
+		return pictureDAO.getNextId(a);
+	}
+	
+	public Picture getByCode(String code){
+		return pictureDAO.getByCode(code).get(0);
 	}
 	
 	private String generateCode(int length){
@@ -39,9 +55,5 @@ public class PictureService {
 		}
 		
 		return sb.toString();
-	}
-	
-	public Integer getNextId(Album a) {
-		return pictureDAO.getNextId(a);
 	}
 }

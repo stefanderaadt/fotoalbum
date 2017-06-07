@@ -31,6 +31,8 @@ import nl.hu.fotoalbum.services.ServiceProvider;
 
 @Path("/picture")
 public class PictureResource {
+	
+	final private String uploadFolder = "C:/Users/Stefan/Documents/School/WAC/uploads/";
 
 	@GET
 	@Produces("image/jpg")
@@ -38,11 +40,10 @@ public class PictureResource {
 	public Response getPicture(@PathParam("picturecode") String pictureCode) throws JsonProcessingException {
 
 		byte[] imageData = null;
-		String path = "D:\\Documents\\school\\wac\\uploads\\";
 		
-		System.out.println(path+pictureCode+".jpg");
+		System.out.println(uploadFolder+pictureCode+".jpg");
 		
-		try (InputStream in = new FileInputStream(path+pictureCode+".jpg")) {
+		try (InputStream in = new FileInputStream(uploadFolder+pictureCode+".jpg")) {
 			BufferedImage img = ImageIO.read(in);
 			
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -66,30 +67,23 @@ public class PictureResource {
 
 		Album a = ServiceProvider.getAlbumService().getByCode(albumCode);
 
-		//System.out.println(a);
-
 		for (Map.Entry<String, List<FormDataBodyPart>> entry : map.entrySet()) {
 
 			for (FormDataBodyPart part : entry.getValue()) {
-				System.out.println(getExtension(part.getName()));
 				Picture p = new Picture(a, getExtension(part.getName()));
-				
-				System.out.println(p);
 
 				int pictureId = ServiceProvider.getPictureService().save(p);
 
 				p = ServiceProvider.getPictureService().get(pictureId);
 
 				String name = p.getCode() + "." + p.getType();
-
-				System.out.println(p);
 				
-				File albumFolder = new File("D:\\Documents\\school\\wac\\uploads\\" + a.getCode());
+				File albumFolder = new File(uploadFolder + a.getCode());
 				
 				albumFolder.mkdir();
 
 				try (OutputStream outPut = new FileOutputStream(
-						new File("D:\\Documents\\school\\wac\\uploads\\" + a.getCode() + "\\" + name));
+						new File(uploadFolder + a.getCode() + "/" + name));
 						InputStream fileContent = part.getEntityAs(InputStream.class)) {
 
 					int read = 0;
@@ -104,19 +98,19 @@ public class PictureResource {
 				}
 			}
 		}
-		return Response.ok("cool upload").build();
+		
+		return Response.ok("uploaded").build();
 	}
 
 	// @RolesAllowed("user")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public String deleteAlbum() throws JsonProcessingException {
-		AlbumDAO albumDAO = new AlbumDAO();
-		ObjectMapper mapper = new ObjectMapper();
+	public Response deleteAlbum(@PathParam("picturecode") String code) throws JsonProcessingException {
+		Picture p = ServiceProvider.getPictureService().getByCode(code);
+		
+		ServiceProvider.getPictureService().delete(p);
 
-		Album a = albumDAO.get(Album.class, 3);
-
-		return mapper.writeValueAsString(a);
+		return Response.ok("deleted").build();
 	}
 
 	private String getExtension(String fileName) {

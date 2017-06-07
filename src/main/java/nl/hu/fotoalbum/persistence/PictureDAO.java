@@ -16,7 +16,11 @@ public class PictureDAO extends BaseDAO {
 	}
 
 	public Integer getNextId(Album a) {
-		List<Picture> pictures = a.getPictures();
+		String q = "FROM Picture WHERE album_id = :albumId";
+		Query query = session.createQuery(q);
+		query.setParameter("albumId", a.getId());
+
+		List<Picture> pictures =  query.list();
 
 		int id = 1;
 		

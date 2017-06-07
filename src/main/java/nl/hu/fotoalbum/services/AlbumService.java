@@ -1,11 +1,15 @@
 package nl.hu.fotoalbum.services;
 
+import java.io.File;
 import java.util.Random;
 
 import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.AlbumDAO;
+import nl.hu.fotoalbum.persistence.Picture;
 
 public class AlbumService {
+	final private String uploadFolder = "C:/Users/Stefan/Documents/School/WAC/uploads/";
+	
 	AlbumDAO albumDAO = new AlbumDAO();
 	
 	public Integer save(Album a){
@@ -32,7 +36,15 @@ public class AlbumService {
 	}
 	
 	public void delete(Album a){
-		albumDAO.delete(a);
+		for(Picture p: a.getPictures()){
+			ServiceProvider.getPictureService().delete(p);
+		}
+		
+		File folder = new File(uploadFolder+a.getCode());
+		
+		if(folder.delete()){
+			albumDAO.delete(a);
+		}
 	}
 	
 	private String generateCode(int length){

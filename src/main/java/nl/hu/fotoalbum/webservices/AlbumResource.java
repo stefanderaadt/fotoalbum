@@ -5,9 +5,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,7 +38,7 @@ public class AlbumResource {
 		ObjectMapper mapper = new ObjectMapper();
 
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
-		
+
 		System.out.println(ServiceProvider.getPictureService().getNextId(a));
 
 		return Response.ok(mapper.writeValueAsString(a)).build();
@@ -50,24 +47,29 @@ public class AlbumResource {
 	// @RolesAllowed("user")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	public String updateAlbum() throws JsonProcessingException {
-		AlbumDAO albumDAO = new AlbumDAO();
+	public Response updateAlbum(@FormParam("code") String code, @FormParam("title") String title, @FormParam("description") String description,
+			@FormParam("shareType") String shareType) throws JsonProcessingException {
+		Album a = ServiceProvider.getAlbumService().getByCode(code);
+		
+		a.setTitle(title);
+		a.setDescription(description);
+		a.setShareType(shareType);
+		
+		ServiceProvider.getAlbumService().saveOrUpdate(a);
+		
 		ObjectMapper mapper = new ObjectMapper();
 
-		Album a = albumDAO.get(Album.class, 3);
-
-		return mapper.writeValueAsString(a);
+		return Response.ok(mapper.writeValueAsString(a)).build();
 	}
 
 	// @RolesAllowed("user")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public String deleteAlbum() throws JsonProcessingException {
-		AlbumDAO albumDAO = new AlbumDAO();
-		ObjectMapper mapper = new ObjectMapper();
+	public Response deleteAlbum(@PathParam("albumcode") String code) throws JsonProcessingException {
+		Album a = ServiceProvider.getAlbumService().getByCode(code);
+		
+		ServiceProvider.getAlbumService().delete(a);
 
-		Album a = albumDAO.get(Album.class, 3);
-
-		return mapper.writeValueAsString(a);
+		return Response.ok("deleted").build();
 	}
 }
