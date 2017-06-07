@@ -57,23 +57,24 @@ public class PictureResource {
 	}
 
 	@POST
-	@Path("{albumid}")
+	@Path("{albumcode}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response uploadPicture(@PathParam("albumid") int albumId, FormDataMultiPart multipart)
+	public Response uploadPicture(@PathParam("albumcode") String albumCode, FormDataMultiPart multipart)
 			throws JsonProcessingException {
 		Map<String, List<FormDataBodyPart>> map = multipart.getFields();
 
-		Album a = ServiceProvider.getAlbumService().get(albumId);
+		Album a = ServiceProvider.getAlbumService().getByCode(albumCode);
 
-		System.out.println(a);
+		//System.out.println(a);
 
 		for (Map.Entry<String, List<FormDataBodyPart>> entry : map.entrySet()) {
 
 			for (FormDataBodyPart part : entry.getValue()) {
-
 				System.out.println(getExtension(part.getName()));
 				Picture p = new Picture(a, getExtension(part.getName()));
+				
+				System.out.println(p);
 
 				int pictureId = ServiceProvider.getPictureService().save(p);
 
@@ -82,6 +83,10 @@ public class PictureResource {
 				String name = p.getCode() + "." + p.getType();
 
 				System.out.println(p);
+				
+				File albumFolder = new File("D:\\Documents\\school\\wac\\uploads\\" + a.getCode());
+				
+				albumFolder.mkdir();
 
 				try (OutputStream outPut = new FileOutputStream(
 						new File("D:\\Documents\\school\\wac\\uploads\\" + a.getCode() + "\\" + name));

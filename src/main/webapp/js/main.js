@@ -1,9 +1,33 @@
 $("#albumForm").submit(function(e) {
 	e.preventDefault();
-
-	var formData = new FormData();
-	var pictures = $("#inputPictures").prop("files");
 	
+	var pictures = $("#inputPictures").prop("files");
+
+	$.ajax({
+		type : "POST",
+		url : "rest/album",
+		data : $("#albumForm").serialize(),
+		/*beforeSend : function(xhr) {
+			var token = window.sessionStorage.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+		},*/
+		success : function(data) {
+			console.log(data);
+			uploadPictures(pictures, data.code);
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			console.log(xhr.responseText);
+			console.log(thrownError);
+		}
+	});
+
+
+});
+
+//Upload pictures
+function uploadPictures(pictures, albumCode){
+	var formData = new FormData();
+
 	console.log($("#inputPictures"));
 	console.log(pictures);
 
@@ -11,16 +35,16 @@ $("#albumForm").submit(function(e) {
 		var file = pictures[i];
 
 		// Add the file to the request.
-		formData.append(file.name ,file);
+		formData.append(file.name, file);
 	}
-	
+
 	console.log(formData);
 
 	// Set up the request.
 	var xhr = new XMLHttpRequest();
 
 	// Open the connection.
-	xhr.open('POST', 'rest/picture/1', true);
+	xhr.open('POST', 'rest/picture/'+albumCode, true);
 
 	xhr.onload = function() {
 		if (xhr.status === 200) {
@@ -30,16 +54,6 @@ $("#albumForm").submit(function(e) {
 			alert('An error occurred!');
 		}
 	};
-	
-	xhr.send(formData);
 
-	/*
-	 * $.ajax({ type : "POST", url : "rest/album", data :
-	 * $("#albumForm").serialize(), beforeSend : function(xhr) { var token =
-	 * window.sessionStorage.getItem("sessionToken");
-	 * xhr.setRequestHeader('Authorization', 'Bearer ' + token); }, success :
-	 * function(data) { console.log(data); }, error : function(xhr, ajaxOptions,
-	 * thrownError) { console.log(xhr.responseText); console.log(thrownError); }
-	 * });
-	 */
-});
+	xhr.send(formData);
+}

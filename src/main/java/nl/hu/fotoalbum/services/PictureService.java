@@ -16,6 +16,8 @@ public class PictureService {
 			code = generateCode(8);
 		}
 		p.setCode(code);
+		System.out.println(getNextId(p.getAlbum()));
+		p.setId(getNextId(p.getAlbum()));
 		return pictureDAO.save(p);
 	}
 	

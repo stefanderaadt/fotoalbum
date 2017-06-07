@@ -15,7 +15,8 @@ public class Album {
 	
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonIgnore
 	private Integer id;
 	
 	@Column(name = "code")

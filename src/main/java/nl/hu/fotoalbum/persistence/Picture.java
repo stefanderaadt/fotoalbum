@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class Picture {
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@JsonIgnore
 	private Integer id;
 
 	@Column(name = "code")
@@ -39,6 +39,10 @@ public class Picture {
 
 	public void setAlbum(Album album) {
 		this.album = album;
+	}
+	
+	public void setId(int id){
+		this.id = id;
 	}
 	
 	public Integer getId() {
