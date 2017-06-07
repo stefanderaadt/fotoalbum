@@ -2,11 +2,12 @@ $("#albumForm").submit(function(e) {
 	e.preventDefault();
 	
 	var pictures = $("#inputPictures").prop("files");
+	var data = $("#albumForm").serialize();
 
 	$.ajax({
 		type : "POST",
 		url : "rest/album",
-		data : $("#albumForm").serialize(),
+		data : data,
 		/*beforeSend : function(xhr) {
 			var token = window.sessionStorage.getItem("sessionToken");
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -22,6 +23,28 @@ $("#albumForm").submit(function(e) {
 	});
 
 
+});
+
+//Shared users events
+$('input[type=radio][name=shareType]').change(function() {
+    if (this.value == 'U') {
+        $("#selectUsersGroup").css("display", "block");
+    }else{
+    	$("#selectUsersGroup").css("display", "none");
+    }
+});
+
+$("#addSharedUserBtn").click(function(){
+	var email = $("#inputUser").val();
+	$("#inputUser").val("");
+	
+	if(email != ""){
+		$("#usersSharedTable").find('tbody').append("<tr><td>"+email+"</td><td><div class='btn btn-danger deleteSharedUserBtn'>delete</div></td></tr>");
+	}
+})
+
+$(document).on("click", ".deleteSharedUserBtn", function() {
+	$(this).parent().parent().remove();
 });
 
 //Upload pictures
@@ -57,3 +80,4 @@ function uploadPictures(pictures, albumCode){
 
 	xhr.send(formData);
 }
+

@@ -27,20 +27,32 @@
 			</div>
 			<div class="form-group">
 				<label for="inputDescription">Description</label> <input type="text"
-					class="form-control" id="inputDescription" placeholder="Description"
-					name="description">
-			</div>
-			
-			<div class="form-group">
-				<label for="inputShareType">Share type</label>
-				<label class="radio-inline"><input class="inputShareType" type="radio" name="shareType" value="P">Public</label>
-				<label class="radio-inline"><input class="inputShareType" type="radio" name="shareType" value="L">Url</label>
-				<label class="radio-inline"><input class="inputShareType" type="radio" name="shareType" value="U">Users</label>
+					class="form-control" id="inputDescription"
+					placeholder="Description" name="description">
 			</div>
 
 			<div class="form-group">
-				<label for="inputPictures">Pictures</label> 
-				<input type="file"
+				<label for="inputShareType">Share type</label> <label
+					class="radio-inline"><input class="inputShareType"
+					type="radio" name="shareType" value="P">Public</label> <label
+					class="radio-inline"><input class="inputShareType"
+					type="radio" name="shareType" value="L">Url</label> <label
+					class="radio-inline"><input class="inputShareType"
+					type="radio" name="shareType" value="U">Users</label>
+			</div>
+
+			<div class="form-group" id="selectUsersGroup" style="display: none">
+				<label for="inputUser">Select users: </label> <input type="text"
+					class="form-control" style="width: 300px; display: inline-block" id="inputUser" placeholder="Users email">
+				<div class='btn btn-success' id="addSharedUserBtn">Add</div>
+				
+				<table id="usersSharedTable" class="table-striped">
+					<tbody></tbody>
+				</table>
+			</div>
+
+			<div class="form-group">
+				<label for="inputPictures">Pictures</label> <input type="file"
 					name="pictures" multiple="true" class="form-control-file"
 					aria-describedby="fileHelp" id="inputPictures">
 			</div>
