@@ -1,5 +1,6 @@
 package nl.hu.fotoalbum.services;
 
+import java.util.List;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,6 +14,14 @@ public class UserService {
 	
 	public User get(int id){
 		return userDAO.get(User.class, id);
+	}
+	
+	public User getByEmail(String email){
+		List<User> users = userDAO.getByEmail(email);
+		
+		if(users.size() > 1) return null;
+		
+		return userDAO.getByEmail(email).get(0);
 	}
 	
 	public User login(String email, String password){

@@ -3,6 +3,14 @@ $("#albumForm").submit(function(e) {
 	
 	var pictures = $("#inputPictures").prop("files");
 	var data = $("#albumForm").serialize();
+	var sharedUsers = [];
+	
+	$("#usersSharedTable tr").each(function() {
+		var columns = $(this).find('td');
+		sharedUsers.push($(columns[0]).text())
+	});
+	
+	data += "&sharedusers="+JSON.stringify(sharedUsers);
 
 	$.ajax({
 		type : "POST",
