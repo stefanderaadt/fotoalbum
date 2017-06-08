@@ -12,4 +12,11 @@ public class AlbumDAO extends BaseDAO{
 		
 		return query.list();
 	}
+	
+	public List<Album> getPublic(){	
+		String q = "FROM Album WHERE share_type = 'P'";
+		Query query = session.createQuery(q);
+		
+		return query.list();
+	}
 }

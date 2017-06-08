@@ -15,15 +15,14 @@ public class Picture {
 
 	@Column(name = "code")
 	private String code;
-	
+
 	@Column(name = "type")
 	private String type;
-	
+
 	@ManyToOne
-    @JoinColumn(name="album_id")
-	@JsonManagedReference
+	@JoinColumn(name = "album_id")
 	@JsonIgnore
-    private Album album;
+	private Album album;
 
 	public Picture() {
 	}
@@ -32,7 +31,7 @@ public class Picture {
 		this.album = album;
 		this.type = type;
 	}
-	
+
 	public Album getAlbum() {
 		return album;
 	}
@@ -40,11 +39,11 @@ public class Picture {
 	public void setAlbum(Album album) {
 		this.album = album;
 	}
-	
-	public void setId(int id){
+
+	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -67,6 +66,6 @@ public class Picture {
 
 	@Override
 	public String toString() {
-		return "Picture [id=" + id + ", type=" + type + "]";
+		return "Picture [album=" + album.getId() + " code=" + code + ", type=" + type + "]";
 	}
 }

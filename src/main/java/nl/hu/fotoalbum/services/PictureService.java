@@ -8,7 +8,7 @@ import nl.hu.fotoalbum.persistence.Picture;
 import nl.hu.fotoalbum.persistence.PictureDAO;
 
 public class PictureService {
-	final private String uploadFolder = "C:/Users/Stefan/Documents/School/WAC/uploads/";
+	final private String uploadFolder = "D:/Documents/school/wac/uploads/";
 	
 	PictureDAO pictureDAO = new PictureDAO();
 	

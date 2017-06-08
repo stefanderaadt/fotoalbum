@@ -1,6 +1,7 @@
 package nl.hu.fotoalbum.services;
 
 import java.io.File;
+import java.util.List;
 import java.util.Random;
 
 import nl.hu.fotoalbum.persistence.Album;
@@ -45,6 +46,10 @@ public class AlbumService {
 		if(folder.delete()){
 			albumDAO.delete(a);
 		}
+	}
+	
+	public List<Album> getPublic(){
+		return albumDAO.getPublic();
 	}
 	
 	private String generateCode(int length){

@@ -32,18 +32,18 @@ import nl.hu.fotoalbum.services.ServiceProvider;
 @Path("/picture")
 public class PictureResource {
 	
-	final private String uploadFolder = "C:/Users/Stefan/Documents/School/WAC/uploads/";
+	final private String uploadFolder = "D:/Documents/school/wac/uploads/";
 
 	@GET
 	@Produces("image/jpg")
-	@Path("/{picturecode}")
-	public Response getPicture(@PathParam("picturecode") String pictureCode) throws JsonProcessingException {
+	@Path("/{albumcode}/{picturecode}")
+	public Response getPicture(@PathParam("albumcode") String albumCode, @PathParam("picturecode") String pictureCode) throws JsonProcessingException {
 
 		byte[] imageData = null;
 		
-		System.out.println(uploadFolder+pictureCode+".jpg");
+		System.out.println(uploadFolder + albumCode+ "/" + pictureCode + ".jpg");
 		
-		try (InputStream in = new FileInputStream(uploadFolder+pictureCode+".jpg")) {
+		try (InputStream in = new FileInputStream(uploadFolder + albumCode+ "/" + pictureCode + ".jpg")) {
 			BufferedImage img = ImageIO.read(in);
 			
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();

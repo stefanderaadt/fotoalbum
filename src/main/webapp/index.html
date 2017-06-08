@@ -19,48 +19,140 @@
 </head>
 <body>
 	<div class="container">
-		<form id="albumForm">
-			<div class="form-group">
-				<label for="inputTitle">Title</label> <input type="text"
-					class="form-control" id="inputTitle" placeholder="Title"
-					name="title">
-			</div>
-			<div class="form-group">
-				<label for="inputDescription">Description</label> <input type="text"
-					class="form-control" id="inputDescription"
-					placeholder="Description" name="description">
-			</div>
+		<header>
+			<nav class="navbar navbar-default" id="navigation">
+				<div class="container-fluid">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#home">Fotoalbum Applicatie</a>
+					</div>
 
-			<div class="form-group">
-				<label for="inputShareType">Share type</label> <label
-					class="radio-inline"><input class="inputShareType"
-					type="radio" name="shareType" value="P">Public</label> <label
-					class="radio-inline"><input class="inputShareType"
-					type="radio" name="shareType" value="L">Url</label> <label
-					class="radio-inline"><input class="inputShareType"
-					type="radio" name="shareType" value="U">Users</label>
-			</div>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="#home">Home</a></li>
+							<li class="active"><a href="#albums">Mijn albums</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li class="dropdown"><a class="dropdown-toggle"
+								data-toggle="dropdown" role="button" aria-haspopup="true"
+								aria-expanded="false">Stefan de Raadt<span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a href="#">Logout</a></li>
+								</ul></li>
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</div>
+				<!-- /.container-fluid -->
+			</nav>
+		</header>
+		<div id="pages">
+			<!-- ################# HOME PAGE ################# -->
+			<section id="home" style="display: block">
+				<h1>Home</h1>
+				<div id="homeAlbumList">
+					<div class="album">
+						<div class="image">
+							<img src="http://localhost:8080/fotoalbum/rest/picture/xXd9NLHp/alTHzG7z"/>
+						</div>
+						<div class="info">
+							<h2>Album van gebruiker1</h2>
+							<hr>
+							<p>
+								Dit is de omschrijving van dit album!
+							</p>
+							<hr>
+							<span>gebruiker1</span>
+						</div>
+					</div>
+				</div>
+			</section>
 
-			<div class="form-group" id="selectUsersGroup" style="display: none">
-				<label for="inputUser">Select users: </label> <input type="text"
-					class="form-control" style="width: 300px; display: inline-block" id="inputUser" placeholder="Users email">
-				<div class='btn btn-success' id="addSharedUserBtn">Add</div>
-				
-				<table id="usersSharedTable" class="table-striped">
-					<tbody></tbody>
-				</table>
-			</div>
+			<!-- ################# USER ALBUMS PAGE ################# -->
+			<section id="albums" style="display: none">
+				<h1>Albums</h1>
+			</section>
 
-			<div class="form-group">
-				<label for="inputPictures">Pictures</label> <input type="file"
-					name="pictures" multiple="true" class="form-control-file"
-					aria-describedby="fileHelp" id="inputPictures">
-			</div>
+			<!-- ################# ALBUM PAGE ################# -->
+			<section id="album" style="display: none">
+				<h1>Album</h1>
+			</section>
 
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary">Opslaan</button>
-			</div>
-		</form>
+			<!-- ################# PICTURE PAGE ################# -->
+			<section id="picture" style="display: none">
+				<h1>Picture</h1>
+			</section>
+
+			<!-- ################# LOGIN PAGE ################# -->
+			<section id="login" style="display: none">
+				<h1>Inloggen</h1>
+				<form id="loginForm">
+					<div class="form-group">
+						<label for="inputEmail">Email</label> <input type="text"
+							class="form-control" id="inputEmail" placeholder="Email"
+							name="email">
+					</div>
+					<div class="form-group">
+						<label for="inputPassword">Wachtwoord</label> <input
+							type="password" class="form-control" id="inputPassword"
+							placeholder="password" name="password">
+					</div>
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary">Login</button>
+					</div>
+
+					<div class="form-group">
+						<span>Nog geen account? <a href="#register">Registreer
+								hier!</a></span>
+					</div>
+				</form>
+			</section>
+
+			<!-- ################# REGISTER PAGE ################# -->
+			<section id="register" style="display: none">
+				<h1>Registreren</h1>
+				<form id="registerForm">
+					<div class="form-group">
+						<label for="inputFirstname">Voornaam</label> <input type="text"
+							class="form-control" id="inputFirstname" placeholder="Voornaam"
+							name="firstname">
+					</div>
+					<div class="form-group">
+						<label for="inputLastname">Achternaam</label> <input type="text"
+							class="form-control" id="inputEmail" placeholder="Email"
+							name="lastname">
+					</div>
+					<div class="form-group">
+						<label for="inputEmail">Email</label> <input type="text"
+							class="form-control" id="inputEmail" placeholder="Email"
+							name="email">
+					</div>
+					<div class="form-group">
+						<label for="inputPassword">Wachtwoord</label> <input
+							type="password" class="form-control" id="inputPassword"
+							placeholder="password" name="password">
+					</div>
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary">Login</button>
+					</div>
+
+					<div class="form-group">
+						<span>Al een account? <a href="#login">Log hier in!</a></span>
+					</div>
+				</form>
+			</section>
+		</div>
 	</div>
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

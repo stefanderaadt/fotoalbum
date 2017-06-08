@@ -2,6 +2,7 @@ package nl.hu.fotoalbum.webservices;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
@@ -9,9 +10,13 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.Hibernate;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.AlbumDAO;
@@ -86,6 +91,33 @@ public class AlbumResource {
 		ServiceProvider.getAlbumService().delete(a);
 
 		return Response.ok("deleted").build();
+	}
+	
+	@GET
+	@Path("public")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPublicAlbums() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String response = "";
+		
+		List<Album> albums = ServiceProvider.getAlbumService().getPublic();
+		
+		ArrayNode albumsNode = mapper.createArrayNode();
+		
+		for(Album a : albums){
+			ObjectNode albumNode = mapper.convertValue(a, ObjectNode.class);
+			
+			ArrayNode pictures = mapper.valueToTree(a.getPictures());
+			
+			albumNode.putArray("pictures").addAll(pictures);
+			
+			albumsNode.add(albumNode);
+			
+			response += mapper.writeValueAsString(albumNode);
+		}
+
+		return Response.ok(mapper.writeValueAsString(albumsNode)).build();
 	}
 	
 	private Set<Integer> getSharedUsers(String sharedUsers){

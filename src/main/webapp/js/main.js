@@ -1,3 +1,41 @@
+// #################### Default functions ####################
+
+$( document ).ready(function() {
+    changePage();
+});
+
+// #################### Navigation ####################
+
+function pageChangedEvents(hash){
+	switch(hash) {
+		case "#home":
+			getPublicAlbums();
+			break;
+			
+		case "#albums":
+			
+			break;
+			
+		default:
+			getPublicAlbums();
+	}
+}
+
+function changePage(){
+	var hash = window.location.hash;
+	
+	if (hash == "") hash = "#home";
+	
+	$("#pages > section").hide();
+	
+	$(hash).show();
+	
+	pageChangedEvents(hash);
+}
+
+$(window).on('hashchange', changePage);
+
+// #################### Form Requests ####################
 $("#albumForm").submit(function(e) {
 	e.preventDefault();
 	
@@ -32,6 +70,30 @@ $("#albumForm").submit(function(e) {
 
 
 });
+
+//#################### Get Requests ####################
+
+function getPublicAlbums(){
+	$.ajax({
+		type : "GET",
+		url : "rest/album/public",
+		/*beforeSend : function(xhr) {
+			var token = window.sessionStorage.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+		},*/
+		success : function(data) {
+			console.log(data);
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			console.log(xhr.responseText);
+			console.log(thrownError);
+		}
+	});
+}
+
+function getUserAlbums(){
+	
+}
 
 //Shared users events
 $('input[type=radio][name=shareType]').change(function() {
