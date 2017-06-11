@@ -48,6 +48,10 @@ public class AlbumService {
 		}
 	}
 	
+	public List<Album> getAll(){
+		return albumDAO.getAll(Album.class);
+	}
+	
 	public List<Album> getPublic(){
 		return albumDAO.getPublic();
 	}

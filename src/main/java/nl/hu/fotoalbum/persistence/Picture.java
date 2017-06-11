@@ -3,23 +3,22 @@ package nl.hu.fotoalbum.persistence;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 @Table(name = "picture")
 public class Picture {
 	@Id
 	@Column(name = "id")
-	@JsonIgnore
+	//@JsonIgnore
 	private Integer id;
 
 	@Column(name = "code")
 	private String code;
-
-	@Column(name = "type")
-	private String type;
+	
+	@Column(name = "path")
+	private String path;
 
 	@ManyToOne
+	@Id
 	@JoinColumn(name = "album_id")
 	@JsonIgnore
 	private Album album;
@@ -27,9 +26,9 @@ public class Picture {
 	public Picture() {
 	}
 
-	public Picture(Album album, String type) {
+	public Picture(Album album, String path) {
 		this.album = album;
-		this.type = type;
+		this.path = path;
 	}
 
 	public Album getAlbum() {
@@ -55,17 +54,17 @@ public class Picture {
 	public void setCode(String code) {
 		this.code = code;
 	}
-
-	public String getType() {
-		return type;
+	
+	public String getPath() {
+		return path;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	@Override
 	public String toString() {
-		return "Picture [album=" + album.getId() + " code=" + code + ", type=" + type + "]";
+		return "Picture [album=" + album.getId() + "id=" + id + " code=" + code + ", path=" + path + "]";
 	}
 }

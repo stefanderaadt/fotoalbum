@@ -25,6 +25,11 @@ import nl.hu.fotoalbum.services.ServiceProvider;
 
 @Path("/album")
 public class AlbumResource {
+	
+	@GET
+	public Response testGet(){
+		return Response.ok("werkt?").build();
+	}
 
 	// @RolesAllowed("user")
 	@POST
@@ -59,7 +64,7 @@ public class AlbumResource {
 
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
 
-		System.out.println(ServiceProvider.getPictureService().getNextId(a));
+		System.out.println(a);
 
 		return Response.ok(mapper.writeValueAsString(a)).build();
 	}
@@ -106,6 +111,7 @@ public class AlbumResource {
 		ArrayNode albumsNode = mapper.createArrayNode();
 		
 		for(Album a : albums){
+			System.out.println(a);
 			ObjectNode albumNode = mapper.convertValue(a, ObjectNode.class);
 			
 			ArrayNode pictures = mapper.valueToTree(a.getPictures());
@@ -118,6 +124,17 @@ public class AlbumResource {
 		}
 
 		return Response.ok(mapper.writeValueAsString(albumsNode)).build();
+	}
+	
+	@GET
+	@Path("all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAll() throws JsonProcessingException {
+		for (Album a: ServiceProvider.getAlbumService().getAll()){
+			System.out.println(a);
+		}
+	
+		return Response.ok("gelukt").build();
 	}
 	
 	private Set<Integer> getSharedUsers(String sharedUsers){

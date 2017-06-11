@@ -28,12 +28,7 @@ public class PictureService {
 	}
 	
 	public void delete(Picture p){
-		
-		File file = new File(uploadFolder+p.getAlbum().getCode()+"/"+p.getCode()+"."+p.getType());
-		
-		if (file.delete()){
-			pictureDAO.delete(p);
-		}
+		pictureDAO.delete(p);
 	}
 	
 	public Integer getNextId(Album a) {

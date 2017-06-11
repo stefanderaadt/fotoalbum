@@ -1,14 +1,17 @@
 package nl.hu.fotoalbum.webservices;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -18,38 +21,40 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.codec.binary.Base64;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nl.hu.fotoalbum.persistence.Album;
-import nl.hu.fotoalbum.persistence.AlbumDAO;
 import nl.hu.fotoalbum.persistence.Picture;
 import nl.hu.fotoalbum.services.ServiceProvider;
 
 @Path("/picture")
 public class PictureResource {
-	
+
 	final private String uploadFolder = "D:/Documents/school/wac/uploads/";
 
 	@GET
 	@Produces("image/jpg")
 	@Path("/{albumcode}/{picturecode}")
-	public Response getPicture(@PathParam("albumcode") String albumCode, @PathParam("picturecode") String pictureCode) throws JsonProcessingException {
+	public Response getPicture(@PathParam("albumcode") String albumCode, @PathParam("picturecode") String pictureCode)
+			throws JsonProcessingException {
 
 		byte[] imageData = null;
-		
-		System.out.println(uploadFolder + albumCode+ "/" + pictureCode + ".jpg");
-		
-		try (InputStream in = new FileInputStream(uploadFolder + albumCode+ "/" + pictureCode + ".jpg")) {
+
+		System.out.println(uploadFolder + albumCode + "/" + pictureCode + ".jpg");
+
+		try (InputStream in = new FileInputStream(uploadFolder + albumCode + "/" + pictureCode + ".jpg")) {
 			BufferedImage img = ImageIO.read(in);
-			
-		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		    ImageIO.write(img, "jpg", baos);
-		    imageData = baos.toByteArray();
-			
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(img, "jpg", baos);
+			imageData = baos.toByteArray();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,39 +71,27 @@ public class PictureResource {
 		Map<String, List<FormDataBodyPart>> map = multipart.getFields();
 
 		Album a = ServiceProvider.getAlbumService().getByCode(albumCode);
+		Picture p = null;
+		String path = "";
 
 		for (Map.Entry<String, List<FormDataBodyPart>> entry : map.entrySet()) {
 
 			for (FormDataBodyPart part : entry.getValue()) {
-				Picture p = new Picture(a, getExtension(part.getName()));
-
-				int pictureId = ServiceProvider.getPictureService().save(p);
-
-				p = ServiceProvider.getPictureService().get(pictureId);
-
-				String name = p.getCode() + "." + p.getType();
 				
-				File albumFolder = new File(uploadFolder + a.getCode());
-				
-				albumFolder.mkdir();
-
-				try (OutputStream outPut = new FileOutputStream(
-						new File(uploadFolder + a.getCode() + "/" + name));
-						InputStream fileContent = part.getEntityAs(InputStream.class)) {
-
-					int read = 0;
-					final byte[] bytes = new byte[1024];
-
-					while ((read = fileContent.read(bytes)) != -1) {
-						outPut.write(bytes, 0, read);
-					}
-
+				try (InputStream fileContent = part.getEntityAs(InputStream.class)) {
+					String extension = getExtension(part.getName());
+					String id = getImgurContent(fileContent, extension);
+					path = "http://i.imgur.com/" + id + "." + extension;
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
+				
+				p =  new Picture(a, path);
+
+				ServiceProvider.getPictureService().save(p);
 			}
 		}
-		
+
 		return Response.ok("uploaded").build();
 	}
 
@@ -107,7 +100,7 @@ public class PictureResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteAlbum(@PathParam("picturecode") String code) throws JsonProcessingException {
 		Picture p = ServiceProvider.getPictureService().getByCode(code);
-		
+
 		ServiceProvider.getPictureService().delete(p);
 
 		return Response.ok("deleted").build();
@@ -122,5 +115,60 @@ public class PictureResource {
 		}
 
 		return extension;
+	}
+	
+	private String getImgurContent(InputStream imageIs, String extension) throws Exception {
+	    URL url;
+	    
+	    //String imageData = Base64.encodeBase64String(;
+	    url = new URL("https://api.imgur.com/3/image");
+	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+	    BufferedImage image = ImageIO.read(imageIs);
+	    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", byteArray);
+        byte[] byteImage = byteArray.toByteArray();
+        String dataImage = new Base64().encodeAsString(byteImage);
+	    
+	    String data = URLEncoder.encode("image", "UTF-8") + "="
+	            + URLEncoder.encode(dataImage, "UTF-8");
+
+	    conn.setDoOutput(true);
+	    conn.setDoInput(true);
+	    conn.setRequestMethod("POST");
+	    conn.setRequestProperty("Authorization", "Client-ID a54132efd839ded"); //Client id
+	    conn.setRequestMethod("POST");
+	    conn.setRequestProperty("Content-Type",
+	            "application/x-www-form-urlencoded");
+
+	    conn.connect();
+	    StringBuilder stb = new StringBuilder();
+	    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+	    wr.write(data);
+	    wr.flush();
+
+	    // Get the response
+	    InputStream is;
+	    if (((HttpURLConnection) conn).getResponseCode() == 400){
+	        is = ((HttpURLConnection) conn).getErrorStream();
+	    	System.out.println("error");
+	    }else{
+	    	is = conn.getInputStream();
+	    }
+	        
+
+	    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+	    
+	    String line;
+	    while ((line = rd.readLine()) != null) {
+	        stb.append(line).append("\n");
+	    }
+	    wr.close();
+	    rd.close();
+	    
+	    ObjectMapper mapper = new ObjectMapper();
+	    JsonNode response = mapper.readTree(stb.toString());
+
+	    return response.get("data").get("id").asText();
 	}
 }

@@ -16,7 +16,7 @@ public class Album {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@JsonIgnore
+	//@JsonIgnore
 	private Integer id;
 	
 	@Column(name = "code")
@@ -135,6 +135,6 @@ public class Album {
 	public String toString() {
 		return "Album [id=" + id + ", code=" + code + ", title=" + title + ", description=" + description
 				+ ", shareType=" + shareType + ", createdAt=" + createdAt
-				+ ", sharedUserIds=" + sharedUserIds + "]";
+				+ ", pictures=" + pictures + "]";
 	}
 }
