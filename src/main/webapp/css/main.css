@@ -1,0 +1,17 @@
+/* Album list */
+
+.album{
+	padding: 16px;
+	overflow:hidden;
+	margin-bottom: 16px;
+}
+
+.image{
+	padding: 0;
+}
+
+/* Default styles */
+
+.small-shadow{
+	box-shadow: 0px 0px 1px grey;
+}

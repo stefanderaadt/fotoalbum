@@ -12,14 +12,13 @@ public class PictureService {
 	
 	PictureDAO pictureDAO = new PictureDAO();
 	
-	public Integer save(Picture p){
+	public Integer save(Picture p){		
 		//Save album and generate random code
 		String code = generateCode(8);
 		while(!pictureDAO.getByCode(code).isEmpty()){
 			code = generateCode(8);
 		}
 		p.setCode(code);
-		p.setId(getNextId(p.getAlbum()));
 		return pictureDAO.save(p);
 	}
 	
@@ -29,10 +28,6 @@ public class PictureService {
 	
 	public void delete(Picture p){
 		pictureDAO.delete(p);
-	}
-	
-	public Integer getNextId(Album a) {
-		return pictureDAO.getNextId(a);
 	}
 	
 	public Picture getByCode(String code){

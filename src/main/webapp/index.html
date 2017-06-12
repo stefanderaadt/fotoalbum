@@ -10,6 +10,8 @@
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
 
+<link href="css/main.css" rel="stylesheet">
+
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -38,13 +40,14 @@
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li class="active"><a href="#home">Home</a></li>
-							<li class="active"><a href="#albums">Mijn albums</a></li>
+							<li id="homeNav"><a href="#home">Home</a></li>
+							<li id="albumsNav"><a href="#albums">Mijn
+									albums</a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
-							<li class="dropdown"><a class="dropdown-toggle"
+							<li class="dropdown" id="navDropdown" style="display: none"><a class="dropdown-toggle"
 								data-toggle="dropdown" role="button" aria-haspopup="true"
-								aria-expanded="false">Stefan de Raadt<span class="caret"></span></a>
+								aria-expanded="false"><span id="navUsername"></span><span class="caret"></span></a>
 								<ul class="dropdown-menu">
 									<li><a href="#">Logout</a></li>
 								</ul></li>
@@ -56,25 +59,27 @@
 			</nav>
 		</header>
 		<div id="pages">
+
 			<!-- ################# HOME PAGE ################# -->
 			<section id="home" style="display: block">
-				<h1>Home</h1>
-				<div id="homeAlbumList">
-					<div class="album">
-						<div class="image">
-							<img src="http://localhost:8080/fotoalbum/rest/picture/xXd9NLHp/alTHzG7z"/>
+				<h1>Publieke albums</h1>
+				<script id="publicAlbumsTemplate" type="text/x-handlebars-template">
+					{{#each this}}
+						<div class="album small-shadow">
+							<div class="image col-md-4">
+								<img class="img-responsive" alt="Afbeelding van: {{title}}" src="{{pictures.0.path}}" />
+							</div>
+							<div class="info col-md-8">
+								<h2>{{title}}</h2>
+								<hr>
+								<p>{{description}}</p>
+								<hr>
+								<span>{{user.firstName}} {{user.lastName}}</span>
+							</div>
 						</div>
-						<div class="info">
-							<h2>Album van gebruiker1</h2>
-							<hr>
-							<p>
-								Dit is de omschrijving van dit album!
-							</p>
-							<hr>
-							<span>gebruiker1</span>
-						</div>
-					</div>
-				</div>
+					{{/each}}
+				</script>
+				<div id="publicAlbumsTemplateResult"></div>
 			</section>
 
 			<!-- ################# USER ALBUMS PAGE ################# -->
@@ -155,11 +160,18 @@
 		</div>
 	</div>
 
+	<!-- LIBS -->
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="js/libs/jquery-3.2.1.min.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/main.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>
+	<script src="js/libs/handlebars-v4.0.10.js"></script>
+
+	<!--  SCRIPTS -->
+	<script src="js/default.js"></script>
+	<script src="js/authorisation.js"></script>
+	<script src="js/navigation.js"></script>
+	<script src="js/events.js"></script>
+	<script src="js/requests.js"></script>
 </body>
 </html>

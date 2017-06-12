@@ -7,11 +7,12 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
 public class UserDAO extends BaseDAO{
-	public User login(String email, String password) {
-		Criteria criteria = session.createCriteria(User.class);
-		User u = (User) criteria.add(Restrictions.eq("email", email)).add(Restrictions.eq("password", password));
-		
-		return u;
+	public Integer save(User u) {
+		transaction = session.beginTransaction();
+		int id = (int) session.save(u);
+		transaction.commit();
+
+		return id;
 	}
 	
 	public List<User> getByEmail(String email){	
@@ -19,6 +20,17 @@ public class UserDAO extends BaseDAO{
 		Query query = session.createQuery(q);
 		query.setParameter("email", email); 
 		
-		return query.list();
+		return query.getResultList();
+	}
+	
+	public User login(String email, String password) {
+		String q = "FROM User WHERE email = :email AND password = :password";
+		Query query = session.createQuery(q);
+		query.setParameter("email", email);
+		query.setParameter("password", password);
+
+		User u = (User) query.uniqueResult();
+
+		return u;
 	}
 }

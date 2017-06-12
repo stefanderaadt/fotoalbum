@@ -1,14 +1,16 @@
 package nl.hu.fotoalbum.persistence;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "picture")
-public class Picture {
+public class Picture implements Serializable{
 	@Id
 	@Column(name = "id")
-	//@JsonIgnore
+	@JsonIgnore
 	private Integer id;
 
 	@Column(name = "code")

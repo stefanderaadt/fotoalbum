@@ -82,6 +82,7 @@ function getPublicAlbums(){
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},*/
 		success : function(data) {
+			
 			console.log(data);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {

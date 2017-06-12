@@ -4,12 +4,15 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "useraccount")
 public class User {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Integer id;
 
 	@Column(name = "first_name")
@@ -22,16 +25,17 @@ public class User {
 	private String email;
 
 	@Column(name = "password")
-	private transient String password;
+	@JsonIgnore
+	private String password;
 	
 	@OneToMany(mappedBy="user")
+	@JsonIgnore
 	private List<Album> albums;
 
 	public User() {
 	}
 
-	public User(Integer id, String firstName, String lastName, String email, String password) {
-		this.id = id;
+	public User(String firstName, String lastName, String email, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -64,6 +68,10 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public void setPassword(String password){
+		this.password = password;
 	}
 	
     @JoinColumn(name="user_id")

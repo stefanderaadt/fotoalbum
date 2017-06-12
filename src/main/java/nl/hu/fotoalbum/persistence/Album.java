@@ -17,7 +17,7 @@ public class Album implements Serializable{
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	//@JsonIgnore
+	@JsonIgnore
 	private Integer id;
 	
 	@Column(name = "code")
@@ -48,6 +48,7 @@ public class Album implements Serializable{
 	@ElementCollection
 	@CollectionTable(name="hassharedusers", joinColumns=@JoinColumn(name="album_id"))
 	@Column(name="user_id")
+	@JsonIgnore
 	public Set<Integer> sharedUserIds;
 	
 	public Album(){}

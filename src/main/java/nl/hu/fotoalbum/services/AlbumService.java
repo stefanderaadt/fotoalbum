@@ -40,12 +40,8 @@ public class AlbumService {
 		for(Picture p: a.getPictures()){
 			ServiceProvider.getPictureService().delete(p);
 		}
-		
-		File folder = new File(uploadFolder+a.getCode());
-		
-		if(folder.delete()){
-			albumDAO.delete(a);
-		}
+
+		albumDAO.delete(a);
 	}
 	
 	public List<Album> getAll(){

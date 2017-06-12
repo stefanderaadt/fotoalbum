@@ -36,13 +36,15 @@ public class BaseDAO {
 	}
 	
 	//Default DAO functions
-	public <T> Integer save(final T o) {
+	/*public <T> T save(final T o) {
+		int id = 0;
+		
 		transaction = session.beginTransaction();
-		int id = (Integer) session.save(o);
+		Object s = session.save(o);
 		transaction.commit();
 		
-		return id;
-	}
+		return (T) s;
+	}*/
 
 	public void delete(final Object object) {
 		session.delete(object);
@@ -59,7 +61,9 @@ public class BaseDAO {
 	}
 
 	public <T> void saveOrUpdate(final T o) {
+		transaction = session.beginTransaction();
 		session.saveOrUpdate(o);
+		transaction.commit();
 	}
 
 	public <T> List<T> getAll(final Class<T> type) {
