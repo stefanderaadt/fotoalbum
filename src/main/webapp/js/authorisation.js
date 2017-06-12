@@ -12,9 +12,7 @@ $("#loginForm").submit(function(e) {
 		success : function(data) {
 			window.sessionStorage.setItem("sessionToken", data);
 			getLoggedInUser();
-			console.log("user");
-			console.log(user);
-			window.location.href = "#home";
+			changePage();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			console.log(xhr.responseText);
@@ -36,8 +34,7 @@ function getLoggedInUser() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
-			user = data;
-			console.log("getloggedinuser: "+user);
+			user = JSON.parse(data);
 			setHeader();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
@@ -50,8 +47,7 @@ function getLoggedInUser() {
 function setHeader(){
 	if(userloggedIn()){
 		$("#navDropdown").show();
-		$("#navUsername").text(user.email);
-		console.log("User: "+user);
+		$("#navUsername").text(user.firstName + " " + user.lastName);
 	}else{
 		$("#navDropdown").hide();
 	}
