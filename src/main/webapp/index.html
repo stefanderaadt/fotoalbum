@@ -61,41 +61,160 @@
 			<div id="pages">
 	
 				<!-- ################# HOME PAGE ################# -->
-				<section id="home" style="display: block">
-					<h1>Publieke albums</h1>
-					<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Large Modal</button>
-					<script id="publicAlbumsTemplate" type="text/x-handlebars-template">
-					{{#each this}}
-						<div class="album small-shadow">
-							<div class="image col-md-4">
-								<img class="img-responsive" alt="Afbeelding van: {{title}}" src="{{pictures.0.path}}" />
-							</div>
-							<div class="info col-md-8">
-								<h2>{{title}}</h2>
-								<hr>
-								<p>{{description}}</p>
-								<hr>
-								<span>{{user.firstName}} {{user.lastName}}</span>
-							</div>
+				<section id="home" style="display: none">
+					<div class="title">
+						<div class="col-md-8">
+							<h1>Publieke albums</h1>
 						</div>
-					{{/each}}
-				</script>
+						<div class="col-md-4">
+							<div class="btn btn-success btn-lg" data-toggle="modal" data-target="#newAlbumModal">Nieuw album</div>
+						</div>
+					</div>
+					<script id="publicAlbumsTemplate" type="text/x-handlebars-template">
+						{{#each this}}
+							<div class="album small-shadow">
+								<a href="?c={{code}}#album">
+									<div class="image col-md-4">
+										<img class="img-responsive" alt="Afbeelding van: {{title}}" src="{{pictures.0.path}}" />
+									</div>
+									<div class="info col-md-8">
+										<h2>{{title}}</h2>
+										<hr>
+										<p>{{description}}</p>
+										<hr>
+										<span>{{user.firstName}} {{user.lastName}}</span>
+									</div>
+								</a>
+							</div>
+						{{/each}}
+					</script>
 					<div id="publicAlbumsTemplateResult"></div>
 				</section>
 	
 				<!-- ################# USER ALBUMS PAGE ################# -->
 				<section id="albums" style="display: none">
-					<h1>Albums</h1>
+					<div class="title">
+						<div class="col-md-10">
+							<h1>Albums</h1>
+						</div>
+						<div class="col-md-2">
+							<div class="btn btn-success btn-lg" data-toggle="modal" data-target="#newAlbumModal">Nieuw album</div>
+						</div>
+					</div>
+					<script id="userAlbumsTemplate" type="text/x-handlebars-template">
+						{{#each this}}
+							<div class="album small-shadow">
+								<a href="?c={{code}}#album">
+									<div class="image col-md-4">
+										<img class="img-responsive" alt="Afbeelding van: {{title}}" src="{{pictures.0.path}}" />
+									</div>
+									<div class="info col-md-8">
+										<h2>{{title}}</h2>
+										<hr>
+										<p>{{description}}</p>
+										<hr>
+										<span>{{user.firstName}} {{user.lastName}}</span>
+									</div>
+								</a>
+							</div>
+						{{/each}}
+					</script>
+					<div id="userAlbumsTemplateResult"></div>
 				</section>
 	
 				<!-- ################# ALBUM PAGE ################# -->
 				<section id="album" style="display: none">
-					<h1>Album</h1>
+					<script id="albumTemplate" type="text/x-handlebars-template">
+						<div class="row">
+							<div class="image col-md-10">
+								<h1>{{title}}</h1>
+							</div>
+							<div class="image col-md-2">
+								<div class="btn btn-xs btn-info pull-right">&middot;&middot;&middot;</div>
+							</div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="image col-md-10">
+								<p>{{description}}</p>
+							</div>
+							<div class="image col-md-2">
+								<div class="btn btn-xs btn-info pull-right">&middot;&middot;&middot;</div>
+							</div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="image col-md-10">
+								<span>{{user.firstName}} {{user.lastName}}</span>
+							</div>
+							<div class="image col-md-2">
+								<span class="pull-right">date</date>
+							</div>
+						</div>
+						<hr>
+						<div>
+							<h3>Afbeeldingen:</h3>
+							<div class="images">
+								{{#each pictures}}
+									<div class="image col-md-6">
+										<a href="?c={{code}}#picture">
+											<img class="img-responsive" alt="{{code}}" src="{{path}}">
+										</a>
+										<div class="btn btn-xs btn-info edit-image">&middot;&middot;&middot;</div>
+									</div>
+								{{/each}}
+							</div>
+						</div>
+					</script>					
+					<script id="albumUserTemplate" type="text/x-handlebars-template">
+						<div>
+							<div class="image col-md-10">
+								<h1>{{title}}</h1>
+							</div>
+							<div class="image col-md-2">
+								<div class="btn btn-info"></div>
+							</div>
+						</div>
+						<hr>
+						<div>
+							<p>{{description}}</p>
+						</div>
+						<hr>
+						<div>
+							<span>{{user.firstName}} {{user.lastName}}</span>
+						</div>
+						<hr>
+						<div>
+							<h3>Afbeeldingen:</h3>
+							<div class="images">
+								{{#each pictures}}
+									<div class="image col-md-6">
+										<a href="?c={{code}}#picture">
+											<img class="img-responsive" alt="{{code}}" src="{{path}}">
+										</a>
+									</div>
+								{{/each}}
+							</div>
+						</div>
+					</script>
+					<div id="albumTemplateResult"></div>
 				</section>
 	
 				<!-- ################# PICTURE PAGE ################# -->
 				<section id="picture" style="display: none">
-					<h1>Picture</h1>
+					<script id="pictureTemplate" type="text/x-handlebars-template">
+						<div class="title">
+							<div class="col-md-8">
+								<h1>{{album.title}}</h1>
+							</div>
+							<div class="col-md-4">
+								<a href="?c={{album.code}}#album"><div class="btn btn-info">Terug</div></a>
+							</div>
+						</div>
+						<hr>
+						<img class="img-responsive" alt="{{code}}" src="{{path}}">
+					</script>
+					<div id="pictureTemplateResult"></div>
 				</section>
 	
 				<!-- ################# LOGIN PAGE ################# -->
@@ -159,8 +278,13 @@
 					</form>
 				</section>
 				
+				<!-- ################# 404 PAGE ################# -->
+				<section id="404" style="display: none">
+					<h1>404</h1>
+				</section>
+				
 				<!-- UPLOAD FORM MODAL -->
-			  	<div class="modal fade" id="myModal" role="dialog">
+			  	<div class="modal fade" id="newAlbumModal" role="dialog">
 			    	<div class="modal-dialog modal-lg">
 			      		<div class="modal-content">
 			        		<div class="modal-header">
@@ -168,7 +292,48 @@
 			          			<h4 class="modal-title">Modal Header</h4>
 			       			</div>
 			        		<div class="modal-body">
-			          			<p>This is a large modal.</p>
+			          			<form id="albumForm">
+									<div class="form-group">
+										<label for="inputTitle">Title</label> <input type="text"
+											class="form-control" id="inputTitle" placeholder="Title"
+											name="title">
+									</div>
+									<div class="form-group">
+										<label for="inputDescription">Description</label> <input type="text"
+											class="form-control" id="inputDescription"
+											placeholder="Description" name="description">
+									</div>
+						
+									<div class="form-group">
+										<label for="inputShareType">Share type</label> <label
+											class="radio-inline"><input class="inputShareType"
+											type="radio" name="shareType" value="P">Public</label> <label
+											class="radio-inline"><input class="inputShareType"
+											type="radio" name="shareType" value="L">Url</label> <label
+											class="radio-inline"><input class="inputShareType"
+											type="radio" name="shareType" value="U">Users</label>
+									</div>
+						
+									<div class="form-group" id="selectUsersGroup" style="display: none">
+										<label for="inputUser">Select users: </label> <input type="text"
+											class="form-control" style="width: 300px; display: inline-block" id="inputUser" placeholder="Users email">
+										<div class='btn btn-success' id="addSharedUserBtn">Add</div>
+										
+										<table id="usersSharedTable" class="table-striped">
+											<tbody></tbody>
+										</table>
+									</div>
+						
+									<div class="form-group">
+										<label for="inputPictures">Pictures</label> <input type="file"
+											name="pictures" multiple="true" class="form-control-file"
+											aria-describedby="fileHelp" id="inputPictures">
+									</div>
+						
+									<div class="form-group">
+										<button type="submit" class="btn btn-primary">Opslaan</button>
+									</div>
+								</form>
 			        		</div>
 			        		<div class="modal-footer">
 			          			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

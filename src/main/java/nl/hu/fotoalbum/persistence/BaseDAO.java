@@ -9,42 +9,31 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 public class BaseDAO {
+	protected static SessionFactory sessionFactory;
 	protected static Session session;
 	protected static Transaction transaction;
 	
-	private static SessionFactory getSessionFactory(){
-		SessionFactory sessionFactory = null;
-		
+	private static void startSessionFactory(){
 		try {
 			sessionFactory = new Configuration().configure().buildSessionFactory();
 		} catch (Throwable ex) {
-			System.err.println("Failed to create sessionFactory object." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
-		
-		return sessionFactory;
+	}
+	
+	private static void stopSessionFactory(){
+		sessionFactory.close();
 	}
 	
 	public static void startSession(){
-		session = getSessionFactory().openSession();
-		//transaction = session.beginTransaction();
+		startSessionFactory();
+		session = sessionFactory.openSession();
 	}
 	
 	public static void stopSession(){
-		//if(transaction.isActive()) transaction.commit();
 		if(session.isOpen()) session.close();
+		stopSessionFactory();
 	}
-	
-	//Default DAO functions
-	/*public <T> T save(final T o) {
-		int id = 0;
-		
-		transaction = session.beginTransaction();
-		Object s = session.save(o);
-		transaction.commit();
-		
-		return (T) s;
-	}*/
 
 	public void delete(final Object object) {
 		session.delete(object);

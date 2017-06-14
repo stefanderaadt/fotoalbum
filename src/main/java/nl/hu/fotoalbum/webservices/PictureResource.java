@@ -18,6 +18,8 @@ import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.imageio.ImageIO;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,6 +30,8 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.Picture;
@@ -35,26 +39,31 @@ import nl.hu.fotoalbum.services.ServiceProvider;
 
 @Path("/picture")
 public class PictureResource {
+	private ObjectMapper mapper = new ObjectMapper();
 
 	@GET
-	@Path("/{picturecode}")
+	@Path("{picturecode}")
+	@RolesAllowed("user")
 	public Response getPicture(@PathParam("picturecode") String code) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-
 		Picture p = ServiceProvider.getPictureService().getByCode(code);
 
-		return Response.ok(mapper.writeValueAsString(p)).build();
+		return Response.ok(pictureToJson(p)).build();
 	}
 
 	@POST
 	@Path("{albumcode}")
+	@RolesAllowed("user")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response uploadPicture(@PathParam("albumcode") String albumCode, FormDataMultiPart multipart)
-			throws JsonProcessingException {
-		Map<String, List<FormDataBodyPart>> map = multipart.getFields();
-
+	public Response uploadPicture(@PathParam("albumcode") String albumCode, FormDataMultiPart multipart, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(albumCode);
+		
+		// Get users email/username from securitycontext
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+
+		if (!a.getUser().getEmail().equals(email)) return Response.status(Response.Status.UNAUTHORIZED).build();
+		
+		Map<String, List<FormDataBodyPart>> map = multipart.getFields();
 		Picture p = null;
 		String path = "";
 
@@ -79,8 +88,8 @@ public class PictureResource {
 		return Response.ok("uploaded").build();
 	}
 
-	// @RolesAllowed("user")
 	@DELETE
+	@RolesAllowed("user")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteAlbum(@PathParam("picturecode") String code) throws JsonProcessingException {
 		Picture p = ServiceProvider.getPictureService().getByCode(code);
@@ -153,5 +162,19 @@ public class PictureResource {
 		JsonNode response = mapper.readTree(stb.toString());
 
 		return response.get("data").get("id").asText();
+	}
+
+	private String pictureToJson(Picture p) {
+		ObjectNode pictureNode = mapper.convertValue(p, ObjectNode.class);
+		
+		pictureNode.putPOJO("album", p.getAlbum());
+	
+		try {
+			return mapper.writeValueAsString(pictureNode);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	
+		return "";
 	}
 }

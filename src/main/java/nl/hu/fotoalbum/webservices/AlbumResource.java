@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -31,7 +32,7 @@ public class AlbumResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postAlbum(@FormParam("title") String title, @FormParam("description") String description,
 			@FormParam("shareType") String shareType, @FormParam("sharedusers") String sharedUsers,
-			ContainerRequestContext requestCtx) throws JsonProcessingException {
+			@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 
@@ -54,10 +55,10 @@ public class AlbumResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAlbum(@PathParam("code") String code) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
+		
+		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
 
-		System.out.println(a);
-
-		return Response.ok(mapper.writeValueAsString(a)).build();
+		return Response.ok(albumToJson(a)).build();
 	}
 
 	@PUT
@@ -65,7 +66,7 @@ public class AlbumResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateAlbum(@FormParam("code") String code, @FormParam("title") String title,
 			@FormParam("description") String description, @FormParam("shareType") String shareType,
-			ContainerRequestContext requestCtx) throws JsonProcessingException {
+			@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
 
 		// Get users email/username from securitycontext
@@ -100,6 +101,18 @@ public class AlbumResource {
 	public Response getPublicAlbums() throws JsonProcessingException {
 
 		return Response.ok(albumsToJson(ServiceProvider.getAlbumService().getPublic())).build();
+	}
+	
+	@GET
+	@RolesAllowed("user")
+	@Path("user")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserAlbums(@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+		
+		User u = ServiceProvider.getUserService().getByEmail(email);
+		
+		return Response.ok(albumsToJson(ServiceProvider.getAlbumService().getFromUser(u.getId()))).build();
 	}
 
 	private Set<Integer> getSharedUsers(String sharedUsers) {
@@ -152,6 +165,8 @@ public class AlbumResource {
 		ArrayNode pictures = mapper.valueToTree(a.getPictures());
 
 		albumNode.putArray("pictures").addAll(pictures);
+		
+		albumNode.putPOJO("user", a.getUser());
 
 		try {
 			return mapper.writeValueAsString(albumNode);

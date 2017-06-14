@@ -11,7 +11,14 @@ $("#loginForm").submit(function(e) {
 		data : $("#loginForm").serialize(),
 		success : function(data) {
 			window.sessionStorage.setItem("sessionToken", data);
+			
+			//Get logged in user
 			getLoggedInUser();
+			
+			//Change hash to #home
+			window.location.hash = "#home";
+			
+			//Go to home page
 			changePage();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {

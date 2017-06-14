@@ -10,6 +10,7 @@ import java.util.Calendar;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
@@ -30,7 +31,7 @@ public class UserResource {
 	
 	@GET
 	@RolesAllowed("user")
-	public Response getUserEmail(ContainerRequestContext requestCtx) throws JsonProcessingException{
+	public Response getCurrentUserInfo(@Context ContainerRequestContext requestCtx) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 		

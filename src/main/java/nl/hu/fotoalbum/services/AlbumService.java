@@ -7,6 +7,7 @@ import java.util.Random;
 import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.AlbumDAO;
 import nl.hu.fotoalbum.persistence.Picture;
+import nl.hu.fotoalbum.persistence.User;
 
 public class AlbumService {
 	final private String uploadFolder = "C:/Users/Stefan/Documents/School/WAC/uploads/";
@@ -29,7 +30,11 @@ public class AlbumService {
 	}
 	
 	public Album getByCode(String code){
-		return albumDAO.getByCode(code).get(0);
+		List <Album> albums = albumDAO.getByCode(code);
+		
+		if(albums.isEmpty()) return null;
+		
+		return albums.get(0);
 	}
 	
 	public void saveOrUpdate(Album a){
@@ -50,6 +55,10 @@ public class AlbumService {
 	
 	public List<Album> getPublic(){
 		return albumDAO.getPublic();
+	}
+	
+	public List<Album> getFromUser(int id){
+		return albumDAO.getFromUser(id);
 	}
 	
 	private String generateCode(int length){

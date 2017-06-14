@@ -22,4 +22,21 @@ public class PictureDAO extends BaseDAO {
 
 		return query.list();
 	}
+	
+	public Integer getNextId(Picture p) {
+	    String q = "FROM Picture WHERE album_id = :albumId";
+	    Query query = session.createQuery(q);
+	    query.setParameter("albumId", p.getAlbum().getId());
+
+	    List<Picture> pictures =  query.list();
+
+	    int id = 1;
+
+	    if (pictures.size() > 0) {
+	        id = pictures.get(pictures.size()-1).getId();
+	        id++;
+	    }
+
+	    return id;
+	}
 }

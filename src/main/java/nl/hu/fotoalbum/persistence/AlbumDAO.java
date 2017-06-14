@@ -27,4 +27,12 @@ public class AlbumDAO extends BaseDAO {
 
 		return query.list();
 	}
+	
+	public List<Album> getFromUser(int id) {
+		String q = "FROM Album WHERE user_id = :id";
+		Query query = session.createQuery(q);
+		query.setParameter("id", id);
+
+		return query.list();
+	}
 }

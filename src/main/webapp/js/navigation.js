@@ -1,13 +1,21 @@
 // #################### Navigation ####################
 
-function pageChangedEvents(hash){
+function pageChangedEvent(hash){
 	switch(hash) {
 		case "#home":
 			getPublicAlbums();
 			break;
 			
 		case "#albums":
+			getUserAlbums();
+			break;
 			
+		case "#album":
+			getAlbum();
+			break;
+			
+		case "#picture":
+			getPicture();
 			break;
 	}
 }
@@ -29,7 +37,7 @@ function changePage(){
 	$("#navigation").find("li").removeClass("active");
 	$(hash+"Nav").addClass("active");
 	
-	pageChangedEvents(hash);
+	pageChangedEvent(hash);
 }
 
 $(window).on('hashchange', changePage);
