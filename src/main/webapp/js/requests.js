@@ -118,7 +118,7 @@ function getUserAlbums() {
 }
 
 function getAlbum() {
-	var code = getUrlParameter("c");
+	var code = localStorage.getItem("code");
 
 	// Check if parameter exists
 	if (code === null || typeof code === 'undefined') {
@@ -135,7 +135,6 @@ function getAlbum() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
-			console.log(data);
 			var source = $("#albumTemplate").html();
 			var template = Handlebars.compile(source);
 			var html = template(data);
@@ -149,7 +148,7 @@ function getAlbum() {
 }
 
 function getPicture() {
-	var code = getUrlParameter("c");
+	var code = localStorage.getItem("code");
 
 	// Check if parameter exists
 	if (code === null || typeof code === 'undefined') {

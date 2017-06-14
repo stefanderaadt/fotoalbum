@@ -44,10 +44,13 @@ public class PictureResource {
 	@GET
 	@Path("{picturecode}")
 	@RolesAllowed("user")
-	public Response getPicture(@PathParam("picturecode") String code) throws JsonProcessingException {
+	public Response getPicture(@PathParam("picturecode") String code, @Context ContainerRequestContext requestCtx)
+			throws JsonProcessingException {
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+		
 		Picture p = ServiceProvider.getPictureService().getByCode(code);
 
-		return Response.ok(pictureToJson(p)).build();
+		return Response.ok(pictureToJson(p, email)).build();
 	}
 
 	@POST
@@ -55,14 +58,16 @@ public class PictureResource {
 	@RolesAllowed("user")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response uploadPicture(@PathParam("albumcode") String albumCode, FormDataMultiPart multipart, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
+	public Response uploadPicture(@PathParam("albumcode") String albumCode, FormDataMultiPart multipart,
+			@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(albumCode);
-		
+
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 
-		if (!a.getUser().getEmail().equals(email)) return Response.status(Response.Status.UNAUTHORIZED).build();
-		
+		if (!a.getUser().getEmail().equals(email))
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+
 		Map<String, List<FormDataBodyPart>> map = multipart.getFields();
 		Picture p = null;
 		String path = "";
@@ -164,17 +169,19 @@ public class PictureResource {
 		return response.get("data").get("id").asText();
 	}
 
-	private String pictureToJson(Picture p) {
+	private String pictureToJson(Picture p, String email) {
 		ObjectNode pictureNode = mapper.convertValue(p, ObjectNode.class);
-		
+
 		pictureNode.putPOJO("album", p.getAlbum());
-	
+
+		pictureNode.put("isFromUser", p.getAlbum().getUser().getEmail().equals(email));
+
 		try {
 			return mapper.writeValueAsString(pictureNode);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-	
+
 		return "";
 	}
 }

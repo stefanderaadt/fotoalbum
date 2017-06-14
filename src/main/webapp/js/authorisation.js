@@ -11,14 +11,14 @@ $("#loginForm").submit(function(e) {
 		data : $("#loginForm").serialize(),
 		success : function(data) {
 			window.sessionStorage.setItem("sessionToken", data);
-			
-			//Get logged in user
+
+			// Get logged in user
 			getLoggedInUser();
-			
-			//Change hash to #home
+
+			// Change hash to #home
 			window.location.hash = "#home";
-			
-			//Go to home page
+
+			// Go to home page
 			changePage();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
@@ -35,34 +35,41 @@ function getLoggedInUser() {
 	$.ajax({
 		type : "GET",
 		url : "rest/user",
-		async: false,
+		async : false,
 		beforeSend : function(xhr) {
 			var token = window.sessionStorage.getItem("sessionToken");
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
-			user = JSON.parse(data);
+			user = data;
 			setHeader();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			switch (xhr.status) {
+				case 403:
+					user = null;
+					break;
+				default: 
+					console.log(xhr.responseText);
+					console.log(thrownError);
+			}
 		}
 	});
 }
 
-function setHeader(){
-	if(userloggedIn()){
+function setHeader() {
+	if (userloggedIn()) {
 		$("#navDropdown").show();
 		$("#navUsername").text(user.firstName + " " + user.lastName);
-	}else{
+	} else {
 		$("#navDropdown").hide();
 	}
 }
 
-//Check if user is logged in
-function userloggedIn(){
-	if(window.sessionStorage.getItem("sessionToken") === null || typeof user === 'undefined') return false;
-	
+// Check if user is logged in
+function userloggedIn() {
+	if (window.sessionStorage.getItem("sessionToken") === null || user === null || typeof user === 'undefined')
+		return false;
+
 	return true;
 }

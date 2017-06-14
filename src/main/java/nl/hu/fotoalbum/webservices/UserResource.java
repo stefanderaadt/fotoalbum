@@ -31,6 +31,7 @@ public class UserResource {
 	
 	@GET
 	@RolesAllowed("user")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCurrentUserInfo(@Context ContainerRequestContext requestCtx) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();

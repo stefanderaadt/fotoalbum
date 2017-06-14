@@ -19,3 +19,7 @@ $("#addSharedUserBtn").click(function(){
 $(document).on("click", ".deleteSharedUserBtn", function() {
 	$(this).parent().parent().remove();
 });
+
+$(document).on("click", ".edit-image-btn", function() {
+	$(this).parent().find(".picture-options").toggle();
+});

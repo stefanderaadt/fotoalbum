@@ -3,7 +3,6 @@
 	padding: 16px;
 	overflow: hidden;
 	margin-bottom: 16px;
-	cursor: pointer;
 }
 
 #albums .image, #home .image {
@@ -11,6 +10,15 @@
 }
 
 /* Album page */
+
+@media ( min-width : 992px) {
+	#album .btn-responsive{
+	    padding: 1px 5px;
+	    font-size: 12px;
+	    line-height: 1.5;
+	    border-radius: 3px;
+	}
+}
 
 #album .image {
 	padding: 8px;
@@ -23,6 +31,20 @@
 	left: 15px;
 	z-index: 100;
 }
+
+#album .image .edit-image > div{
+	display: inline-block;
+	vertical-align: top;
+}
+
+#album .image .edit-image > div > div{
+	display: block;
+}
+
+#album .picture-options div{
+	margin-bottom: 8px;
+}
+
 
 /* Title bar */
 .title {
@@ -40,13 +62,16 @@
 }
 
 @media ( max-width : 991px) {
-	.title .btn {
-		margin-top: 8px;
+	.title .btn, #picture .btn{
 		width: 100%;
 	}
 }
 
 /* Default styles */
+.change-page{
+	cursor: pointer;
+}
+
 .row{
 	overflow: hidden;
 	margin: 0;

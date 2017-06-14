@@ -53,12 +53,14 @@ public class AlbumResource {
 	@RolesAllowed("user")
 	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAlbum(@PathParam("code") String code) throws JsonProcessingException {
+	public Response getAlbum(@PathParam("code") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+		
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
 		
 		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
 
-		return Response.ok(albumToJson(a)).build();
+		return Response.ok(albumToJson(a, email)).build();
 	}
 
 	@PUT
@@ -159,7 +161,7 @@ public class AlbumResource {
 		return "";
 	}
 
-	private String albumToJson(Album a) {
+	private String albumToJson(Album a, String email) {
 		ObjectNode albumNode = mapper.convertValue(a, ObjectNode.class);
 
 		ArrayNode pictures = mapper.valueToTree(a.getPictures());
@@ -167,8 +169,11 @@ public class AlbumResource {
 		albumNode.putArray("pictures").addAll(pictures);
 		
 		albumNode.putPOJO("user", a.getUser());
-
+		
+		albumNode.put("isFromUser", a.getUser().getEmail().equals(email));
+		
 		try {
+			System.out.println(mapper.writeValueAsString(albumNode));
 			return mapper.writeValueAsString(albumNode);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
