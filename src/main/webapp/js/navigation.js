@@ -10,6 +10,10 @@ function pageChangedEvent(hash){
 			getUserAlbums();
 			break;
 			
+		case "#shared":
+			getSharedAlbums();
+			break;
+			
 		case "#album":
 			getAlbum();
 			break;

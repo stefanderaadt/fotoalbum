@@ -17,6 +17,7 @@
 	    font-size: 12px;
 	    line-height: 1.5;
 	    border-radius: 3px;
+	    margin: 6px 0 6px 6px;
 	}
 }
 
@@ -43,6 +44,28 @@
 
 #album .picture-options div{
 	margin-bottom: 8px;
+}
+
+#album .edit-title, #album .edit-desc{
+	 width:auto;
+	 overflow:hidden;
+	 position: relative;
+}
+
+#album .edit-title-input, #album .edit-desc-input{
+	width: 100%;
+}
+
+.add-shared-users-table{
+	margin-top: 16px;
+}
+
+.add-shared-users-table tr td{
+	padding: 8px;
+}
+
+.add-shared-users-table tr td:first-child{
+	min-width: 200px;
 }
 
 

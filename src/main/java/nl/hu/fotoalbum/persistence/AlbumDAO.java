@@ -22,14 +22,14 @@ public class AlbumDAO extends BaseDAO {
 	}
 
 	public List<Album> getPublic() {
-		String q = "FROM Album WHERE share_type = 'P'";
+		String q = "FROM Album WHERE share_type = 'P' ORDER BY created_at DESC";
 		Query query = session.createQuery(q);
 
 		return query.list();
 	}
 	
 	public List<Album> getFromUser(int id) {
-		String q = "FROM Album WHERE user_id = :id";
+		String q = "FROM Album WHERE user_id = :id ORDER BY created_at DESC";
 		Query query = session.createQuery(q);
 		query.setParameter("id", id);
 

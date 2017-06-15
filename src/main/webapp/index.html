@@ -41,8 +41,8 @@
 							id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
 								<li id="homeNav"><a href="#home">Home</a></li>
-								<li id="albumsNav"><a href="#albums">Mijn
-										albums</a></li>
+								<li id="albumsNav"><a href="#albums">Mijn albums</a></li>
+								<li id="sharedNav"><a href="#shared">Gedeeld met mij</a></li>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
 								<li class="dropdown" id="navDropdown" style="display: none"><a class="dropdown-toggle"
@@ -82,6 +82,7 @@
 										<hr>
 										<p>{{description}}</p>
 										<hr>
+										<span class="pull-right">{{{formatDate createdAt}}}</span>
 										<span>{{user.firstName}} {{user.lastName}}</span>
 									</div>
 								</div>
@@ -113,6 +114,7 @@
 										<hr>
 										<p>{{description}}</p>
 										<hr>
+										<span class="pull-right">{{{formatDate createdAt}}}</span>
 										<span>{{user.firstName}} {{user.lastName}}</span>
 									</div>
 								</div>
@@ -121,17 +123,54 @@
 					</script>
 					<div id="userAlbumsTemplateResult"></div>
 				</section>
+				
+				<!-- ################# SHARED ALBUMS PAGE ################# -->
+				<section id="shared" style="display: none">
+					<div class="title">
+						<div class="col-md-10">
+							<h1>Gedeeld met mij</h1>
+						</div>
+						<div class="col-md-2">
+							<div class="btn btn-success btn-lg" data-toggle="modal" data-target="#newAlbumModal">Nieuw album</div>
+						</div>
+					</div>
+					<script id="sharedAlbumsTemplate" type="text/x-handlebars-template">
+						{{#each this}}
+							<div class="album small-shadow">
+								<div class="change-page" path="#album" code="{{code}}">
+									<div class="image col-md-4">
+										<img class="img-responsive" alt="Afbeelding van: {{title}}" src="{{pictures.0.path}}" />
+									</div>
+									<div class="info col-md-8">
+										<h2>{{title}}</h2>
+										<hr>
+										<p>{{description}}</p>
+										<hr>
+										<span class="pull-right">{{{formatDate createdAt}}}</span>
+										<span>{{user.firstName}} {{user.lastName}}</span>
+									</div>
+								</div>
+							</div>
+						{{/each}}
+					</script>
+					<div id="sharedAlbumsTemplateResult"></div>
+				</section>
 	
 				<!-- ################# ALBUM PAGE ################# -->
 				<section id="album" style="display: none">					
 					<script id="albumTemplate" type="text/x-handlebars-template">
 						<div class="row">
 							{{#if isFromUser}}
-								<div class="image col-md-10">
-									<h1>{{title}}</h1>
+								<div class="image col-md-9">
+									<h1 id="edit-title-view">{{title}}</h1>
 								</div>
-								<div class="image col-md-2">
-									<div class="btn btn-responsive btn-info pull-right">&middot;&middot;&middot;</div>
+								<div class="image col-md-3">
+									<div class="pull-right">
+										<div class="btn btn-responsive btn-info" id="edit-title-btn">&middot;&middot;&middot;</div>
+									</div>
+									<div class="edit-title" style="display: none">
+										<input type="text" id="edit-title-input" class="form-control edit-title-input" name="edit-title" placeholder="titel" value="{{title}}">
+									</div>
 								</div>
 							{{else}}
 								<div class="image col-md-12">
@@ -142,11 +181,16 @@
 						<hr>
 						<div class="row">
 							{{#if isFromUser}}
-								<div class="image col-md-10">
-									<p>{{description}}</p>
+								<div class="image col-md-9">
+									<p id="edit-desc-view">{{description}}</p>
 								</div>
-								<div class="image col-md-2">
-									<div class="btn btn-responsive btn-info pull-right">&middot;&middot;&middot;</div>
+								<div class="image col-md-3">
+									<div class="pull-right">
+										<div class="btn btn-responsive btn-info" id="edit-desc-btn">&middot;&middot;&middot;</div>
+									</div>
+									<div class="edit-desc" style="display: none">
+										<input type="text" id="edit-desc-input" class="form-control edit-desc-input" name="desc-title" placeholder="beschrijving" value="{{description}}">
+									</div>
 								</div>
 							{{else}}
 								<div class="image col-md-12">
@@ -160,9 +204,37 @@
 								<span>{{user.firstName}} {{user.lastName}}</span>
 							</div>
 							<div class="image col-md-2">
-								<span class="pull-right">date</date>
+								<span class="pull-right">{{{formatDate createdAt}}}</date>
 							</div>
 						</div>
+						{{#if isFromUser}}
+							<hr>
+							<div class="row">
+								<label for="input-share-type">Share type</label> 
+								<label class="radio-inline"><input class="input-share-type" type="radio" name="share-type" value="P" {{{setChecked 'P' shareType}}}>Public</label> 
+								<label class="radio-inline"><input class="input-share-type" type="radio" name="share-type" value="L" {{{setChecked 'L' shareType}}}>Url</label> 
+								<label class="radio-inline"><input class="input-share-type" type="radio" name="share-type" value="U" {{{setChecked 'U' shareType}}}>Users</label>
+
+								<div class="select-users-group" {{{displaySharedUsersGroup shareType}}}>
+									<label for="inputUser">Select users: </label> <input type="text"
+										class="form-control input-user" style="width: 300px; display: inline-block" placeholder="Users email">
+									<div class='btn btn-success add-shared-user-btn'>Add</div>
+											
+									<table class="table-bordered add-shared-users-table">
+										<tbody>
+											{{#each sharedUsers}}
+												<tr><td>{{email}}</td><td><div class='btn btn-danger delete-shared-users-btn'>Verwijderen</div></td></tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="btn btn-success" code="{{code}}" id="album-save-btn">Opslaan</div>
+								<div class="btn btn-danger" code="{{code}}" id="album-delete-btn">Album verwijderen</div>
+							</div>
+						{{/if}}
 						<hr>
 						<div>
 							<h3>Afbeeldingen:</h3>
@@ -176,7 +248,7 @@
 											<div class="edit-image">
 												<div class="btn btn-responsive btn-info edit-image-btn">&middot;&middot;&middot;</div>
 												<div class="picture-options" style="display: none">
-													<div class="btn btn-danger">Verwijderen</div>
+													<div class="btn btn-danger" code="{{code}}">Verwijderen</div>
 												</div>
 											</div>
 										{{/if}}
@@ -204,7 +276,7 @@
 						{{#if isFromUser}}
 							<hr>
 							<div class="col-md-4">
-								<div class="btn btn-danger">Verwijderen</div>
+								<div class="btn btn-danger" code="{{code}}">Verwijderen</div>
 							</div>
 						{{/if}}
 					</script>
@@ -298,24 +370,21 @@
 											placeholder="Description" name="description">
 									</div>
 						
-									<div class="form-group">
-										<label for="inputShareType">Share type</label> <label
-											class="radio-inline"><input class="inputShareType"
-											type="radio" name="shareType" value="P">Public</label> <label
-											class="radio-inline"><input class="inputShareType"
-											type="radio" name="shareType" value="L">Url</label> <label
-											class="radio-inline"><input class="inputShareType"
-											type="radio" name="shareType" value="U">Users</label>
-									</div>
-						
-									<div class="form-group" id="selectUsersGroup" style="display: none">
-										<label for="inputUser">Select users: </label> <input type="text"
-											class="form-control" style="width: 300px; display: inline-block" id="inputUser" placeholder="Users email">
-										<div class='btn btn-success' id="addSharedUserBtn">Add</div>
-										
-										<table id="usersSharedTable" class="table-striped">
-											<tbody></tbody>
-										</table>
+									<div class="form-group">	
+										<label for="input-share-type">Share type</label> 
+										<label class="radio-inline"><input class="input-share-type" type="radio" name="share-type" value="P">Public</label> 
+										<label class="radio-inline"><input class="input-share-type" type="radio" name="share-type" value="L">Url</label> 
+										<label class="radio-inline"><input class="input-share-type" type="radio" name="share-type" value="U">Users</label>
+		
+										<div class="select-users-group" style="display: none">
+											<label for="inputUser">Select users: </label> <input type="text"
+												class="form-control input-user" style="width: 300px; display: inline-block" placeholder="Users email">
+											<div class='btn btn-success add-shared-user-btn'>Add</div>
+													
+											<table class="table-bordered add-shared-users-table">
+												<tbody></tbody>
+											</table>
+										</div>
 									</div>
 						
 									<div class="form-group">

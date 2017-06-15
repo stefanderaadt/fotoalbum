@@ -1,6 +1,7 @@
 package nl.hu.fotoalbum.services;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -57,8 +58,28 @@ public class AlbumService {
 		return albumDAO.getPublic();
 	}
 	
+	public List<Album> getSharedWithUser(User u){
+		List<Album> albums =  new ArrayList<Album>();
+		
+		for(int id: u.getSharedAlbumIds()){
+			albums.add(get(id));
+		}
+		
+		return albums;
+	}
+	
 	public List<Album> getFromUser(int id){
 		return albumDAO.getFromUser(id);
+	}
+	
+	public List<User> getSharedUsers(Album a){
+		List<User> users =  new ArrayList<User>();
+		
+		for(int id : a.getSharedUserIds()){
+			users.add(ServiceProvider.getUserService().get(id));
+		}
+		
+		return users;
 	}
 	
 	private String generateCode(int length){

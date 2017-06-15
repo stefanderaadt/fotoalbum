@@ -9,10 +9,12 @@ $("#albumForm").submit(function(e) {
 	var data = $("#albumForm").serialize();
 	var sharedUsers = [];
 
-	$("#usersSharedTable tr").each(function() {
+	$(this).find(".add-shared-users-table").find("tr").each(function() {
 		var columns = $(this).find('td');
 		sharedUsers.push($(columns[0]).text())
 	});
+	
+	console.log(sharedUsers);
 
 	data += "&sharedusers=" + JSON.stringify(sharedUsers);
 
@@ -70,6 +72,76 @@ function uploadPictures(pictures, albumCode) {
 }
 
 /*
+#################### Update Requests ####################
+ */
+
+$(document).on("click", "#album-save-btn", function(){
+	var data = "";
+	var code = $(this).attr("code");
+	var sharedUsers = [];
+	
+	var parent = $(this).parent().parent();
+	
+	data += "title="+parent.find("#edit-title-input").val();
+	
+	data += "&description="+parent.find("#edit-desc-input").val();
+	
+	data += "&shareType="+parent.find("input[name=share-type]:checked").val();
+	
+	parent.find(".add-shared-users-table").find("tr").each(function() {
+		var columns = $(this).find('td');
+		sharedUsers.push($(columns[0]).text())
+	});
+
+	data += "&sharedusers=" + JSON.stringify(sharedUsers);
+	
+	$.ajax({
+		type : "PUT",
+		url : "rest/album/"+code,
+		data : data,
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+		},
+		success : function(data) {
+			getAlbum();
+			//uploadPictures(pictures, data.code);
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			console.log(xhr.responseText);
+			console.log(thrownError);
+		}
+	});
+});
+
+/*
+#################### Delete Requests ####################
+ */
+
+
+
+$(document).on("click", "#album-delete-btn", function(){
+	var code = $(this).attr("code");
+	
+	$.ajax({
+		type : "DELETE",
+		url : "rest/album/"+code,
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+		},
+		success : function(data) {
+			window.location.hash = "#home";
+			changePage();
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			console.log(xhr.responseText);
+			console.log(thrownError);
+		}
+	});
+});
+
+/*
  * #################### Get Requests ####################
  */
 
@@ -117,6 +189,28 @@ function getUserAlbums() {
 	});
 }
 
+function getSharedAlbums() {
+	$.ajax({
+		type : "GET",
+		url : "rest/album/shared",
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+		},
+		success : function(data) {
+			console.log(data);
+			var source = $("#sharedAlbumsTemplate").html();
+			var template = Handlebars.compile(source);
+			var html = template(data);
+			$("#sharedAlbumsTemplateResult").html(html);
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			console.log(xhr.responseText);
+			console.log(thrownError);
+		}
+	});
+}
+
 function getAlbum() {
 	var code = localStorage.getItem("code");
 
@@ -135,6 +229,7 @@ function getAlbum() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			console.log(data);
 			var source = $("#albumTemplate").html();
 			var template = Handlebars.compile(source);
 			var html = template(data);

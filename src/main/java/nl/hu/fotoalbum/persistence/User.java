@@ -1,6 +1,7 @@
 package nl.hu.fotoalbum.persistence;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -31,6 +32,12 @@ public class User {
 	@OneToMany(mappedBy="user")
 	@JsonIgnore
 	private List<Album> albums;
+	
+	@ElementCollection
+	@CollectionTable(name="hassharedusers", joinColumns=@JoinColumn(name="user_id"))
+	@Column(name="album_id")
+	@JsonIgnore
+	public Set<Integer> sharedAlbumIds;
 
 	public User() {
 	}
@@ -82,6 +89,10 @@ public class User {
     public void setAlbums(List<Album> albums){
     	this.albums = albums;
     }
+    
+	public Set<Integer> getSharedAlbumIds() {
+		return sharedAlbumIds;
+	}
 
 	@Override
 	public String toString() {

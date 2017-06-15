@@ -31,7 +31,7 @@ public class AlbumResource {
 	@RolesAllowed("user")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postAlbum(@FormParam("title") String title, @FormParam("description") String description,
-			@FormParam("shareType") String shareType, @FormParam("sharedusers") String sharedUsers,
+			@FormParam("share-type") String shareType, @FormParam("sharedusers") String sharedUsers,
 			@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
@@ -59,15 +59,34 @@ public class AlbumResource {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
 		
 		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
+		
+		User u = ServiceProvider.getUserService().getByEmail(email);
+		
+		//Check if user has access to view the album if its shared with other users.
+		if(a.getShareType().equals("U") && a.getUser().getId() != u.getId()){
+			boolean gevonden = false;
+			
+			for(int id : a.getSharedUserIds()){
+				if(id == u.getId()){
+					gevonden = true;
+					break;
+				}
+				
+				if(!gevonden) return Response.status(Response.Status.UNAUTHORIZED).build();
+					
+			}
+		}
 
 		return Response.ok(albumToJson(a, email)).build();
 	}
 
 	@PUT
 	@RolesAllowed("user")
+	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateAlbum(@FormParam("code") String code, @FormParam("title") String title,
+	public Response updateAlbum(@PathParam("code") String code, @FormParam("title") String title,
 			@FormParam("description") String description, @FormParam("shareType") String shareType,
+			@FormParam("sharedusers") String sharedUsers,
 			@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
 
@@ -79,17 +98,29 @@ public class AlbumResource {
 		a.setTitle(title);
 		a.setDescription(description);
 		a.setShareType(shareType);
+		
+		if (shareType.equals("U")) {
+			a.setSharedUserIds(getSharedUsers(sharedUsers));
+		}else{
+			a.setSharedUserIds(new HashSet<Integer>());
+		}
 
 		ServiceProvider.getAlbumService().saveOrUpdate(a);
 
-		return Response.ok(mapper.writeValueAsString(a)).build();
+		return Response.ok(albumToJson(a, email)).build();
 	}
 
 	@DELETE
 	@RolesAllowed("user")
+	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteAlbum(@PathParam("albumcode") String code) throws JsonProcessingException {
+	public Response deleteAlbum(@PathParam("albumcode") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
+		
+		// Get users email/username from securitycontext
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+
+		if (!a.getUser().getEmail().equals(email)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		ServiceProvider.getAlbumService().delete(a);
 
@@ -103,6 +134,18 @@ public class AlbumResource {
 	public Response getPublicAlbums() throws JsonProcessingException {
 
 		return Response.ok(albumsToJson(ServiceProvider.getAlbumService().getPublic())).build();
+	}
+	
+	@GET
+	@RolesAllowed("user")
+	@Path("shared")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAlbumsSharedWithUser(@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+		
+		User u = ServiceProvider.getUserService().getByEmail(email);
+		
+		return Response.ok(albumsToJson(ServiceProvider.getAlbumService().getSharedWithUser(u))).build();
 	}
 	
 	@GET
@@ -172,8 +215,13 @@ public class AlbumResource {
 		
 		albumNode.put("isFromUser", a.getUser().getEmail().equals(email));
 		
+		if(a.getUser().getEmail().equals(email) && a.getShareType().equals("U")){		
+			ArrayNode sharedUsers = mapper.valueToTree(ServiceProvider.getAlbumService().getSharedUsers(a));
+
+			albumNode.putArray("sharedUsers").addAll(sharedUsers);
+		}
+		
 		try {
-			System.out.println(mapper.writeValueAsString(albumNode));
 			return mapper.writeValueAsString(albumNode);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
