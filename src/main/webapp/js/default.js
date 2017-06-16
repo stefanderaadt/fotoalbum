@@ -84,7 +84,7 @@ function setHandlebarsHelpers() {
 		}
 		interval = Math.floor(seconds / 60);
 		if (interval > 0) {
-			if(interval === 1) return minuut + " minuut geleden";
+			if(interval === 1) return interval + " minuut geleden";
 			
 			return interval + " minuten geleden";
 		}
@@ -103,6 +103,17 @@ $(document).ready(function() {
 
 function getSpinner(){
 	return '<div style="text-align: center"><i class="fa fa-spinner fa-spin" style="font-size:40px"></i></div>';
+}
+
+function printProgressBar(templateResult, value){
+	var data = {};
+	
+	data.value = value;
+	
+	var source = $("#defaultProgressBarTemplate").html();
+	var template = Handlebars.compile(source);
+	var html = template(data);
+	$(templateResult).html(html);
 }
 
 // Get url parameter function

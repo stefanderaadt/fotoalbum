@@ -420,6 +420,10 @@
 									<div class="form-group">
 										<button type="submit" class="btn btn-primary">Opslaan</button>
 									</div>
+									
+									<div class="form-group">
+										<div id="uploadAlbumProgressBarResult"></div>
+									</div>
 								</form>
 			        		</div>
 			        		<div class="modal-footer">
@@ -428,6 +432,19 @@
 			      		</div>
 			    	</div>
 			  	</div>
+			  	
+			  	<!-- PROGRESS BAR TEMPLATE -->
+			  	<script id="defaultProgressBarTemplate" type="text/x-handlebars-template">
+					<p>Bezig met uploaden....</p>
+					<div class="progress">
+						<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{value}}"
+							aria-valuemin="0" aria-valuemax="100" style="width:{{value}}%">
+							{{value}}%
+						</div>
+					</div>
+				</script>
+			  	
+			  	
 			</div>
 		</div>
 
