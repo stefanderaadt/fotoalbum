@@ -100,8 +100,16 @@
 	margin: 0;
 }
 
+.pointer{
+	cursor: pointer;
+}
+
+.margin-left-8{
+	margin-left: 8px;
+}
+
 .padding-16 {
-	margin: 16px;
+	padding: 16px;
 }
 
 a, a:hover {

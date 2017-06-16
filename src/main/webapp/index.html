@@ -49,8 +49,9 @@
 									data-toggle="dropdown" role="button" aria-haspopup="true"
 									aria-expanded="false"><span id="navUsername"></span><span class="caret"></span></a>
 									<ul class="dropdown-menu">
-										<li><a href="#">Logout</a></li>
-									</ul></li>
+										<li><div id="logout" class="pointer margin-left-8">Logout</div></li>
+									</ul>
+								</li>
 							</ul>
 						</div>
 						<!-- /.navbar-collapse -->
@@ -59,7 +60,22 @@
 				</nav>
 			</header>
 			<div id="pages">
-	
+				<script id="successTemplate" type="text/x-handlebars-template">
+					<div class="alert alert-success fade in">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  						{{message}}
+					</div>	
+				</script>
+				<div id="successTemplateResult"></div>
+			
+				<script id="errorTemplate" type="text/x-handlebars-template">
+					<div class="alert alert-danger fade in">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  						{{message}}
+					</div>	
+				</script>
+				<div id="errorTemplateResult"></div>
+				
 				<!-- ################# HOME PAGE ################# -->
 				<section id="home" style="display: none">
 					<div class="title">
@@ -349,7 +365,7 @@
 					<h1>404</h1>
 				</section>
 				
-				<!-- UPLOAD FORM MODAL -->
+				<!-- NEW ALBUM MODAL -->
 			  	<div class="modal fade" id="newAlbumModal" role="dialog">
 			    	<div class="modal-dialog modal-lg">
 			      		<div class="modal-content">
@@ -358,6 +374,13 @@
 			          			<h4 class="modal-title">Modal Header</h4>
 			       			</div>
 			        		<div class="modal-body">
+        						<script id="modalErrorTemplate" type="text/x-handlebars-template">
+									<div class="alert alert-danger fade in">
+										<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  										{{message}}
+									</div>	
+								</script>
+								<div id="modalErrorTemplateResult"></div>
 			          			<form id="albumForm">
 									<div class="form-group">
 										<label for="inputTitle">Title</label> <input type="text"

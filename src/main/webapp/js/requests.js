@@ -27,12 +27,10 @@ $("#albumForm").submit(function(e) {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
-			console.log(data);
 			uploadPictures(pictures, data.code);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
 		}
 	});
 
@@ -62,9 +60,17 @@ function uploadPictures(pictures, albumCode) {
 	xhr.onload = function() {
 		if (xhr.status === 200) {
 			// File(s) uploaded.
-			uploadButton.innerHTML = 'Upload';
+			
+			//Set code
+			localStorage.setItem("code", albumCode);
+			
+			//Go to album page
+			window.location.hash = "#album";
+			
+			//Display success
+			displaySuccess("Nieuw album opgeslagen!");
 		} else {
-			alert('An error occurred!');
+			displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
 		}
 	};
 
@@ -104,12 +110,11 @@ $(document).on("click", "#album-save-btn", function(){
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
-			getAlbum();
-			//uploadPictures(pictures, data.code);
+			displaySuccess("Album succesvol aangepast.");
+			changePage();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Er is iets fout gegaan met het aanpassen van dit album.");
 		}
 	});
 });
@@ -132,11 +137,10 @@ $(document).on("click", "#album-delete-btn", function(){
 		},
 		success : function(data) {
 			window.location.hash = "#home";
-			changePage();
+			displaySuccess("Album verwijderd aangepast.");
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Er is iets fout gegaan met het verwijderen van dit album.");
 		}
 	});
 });
@@ -161,8 +165,7 @@ function getPublicAlbums() {
 			$("#publicAlbumsTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Albums kunnen niet worden opgehaald.");
 		}
 	});
 }
@@ -183,8 +186,7 @@ function getUserAlbums() {
 			$("#userAlbumsTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Albums kunnen niet worden opgehaald.");
 		}
 	});
 }
@@ -205,8 +207,7 @@ function getSharedAlbums() {
 			$("#sharedAlbumsTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Albums kunnen niet worden opgehaald.");
 		}
 	});
 }
@@ -217,7 +218,6 @@ function getAlbum() {
 	// Check if parameter exists
 	if (code === null || typeof code === 'undefined') {
 		window.location.hash = "#404";
-		changePage();
 		return;
 	}
 
@@ -236,8 +236,7 @@ function getAlbum() {
 			$("#albumTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Fout bij het ophalen van dit album.");
 		}
 	});
 }
@@ -248,7 +247,6 @@ function getPicture() {
 	// Check if parameter exists
 	if (code === null || typeof code === 'undefined') {
 		window.location.hash = "#404";
-		changePage();
 		return;
 	}
 
@@ -267,8 +265,7 @@ function getPicture() {
 			$("#pictureTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Fout bij het ophalen van deze afbeelding.");
 		}
 	});
 }
@@ -288,8 +285,7 @@ $("#registerForm").submit(function(e) {
 			console.log(data);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			displayError("Fout bij het registreren.");
 		}
 	});
 });

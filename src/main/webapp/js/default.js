@@ -2,14 +2,40 @@
 
 var user;
 
-// #################### Default functions ####################
+//#################### Alerts functions ####################
 
-$(document).ready(function() {
-	changePage();
-	setHandlebarsHelpers();
-});
+function displaySuccess(message){
+	var data = {};
+	data.message = message;
+	
+	var source = $("#successTemplate").html();
+	var template = Handlebars.compile(source);
+	var html = template(data);
+	$("#successTemplateResult").html(html);
+}
 
-// Set handlebars helper functions
+function displayError(message){
+	var data = {};
+	data.message = message;
+	
+	var source = $("#errorTemplate").html();
+	var template = Handlebars.compile(source);
+	var html = template(data);
+	$("#errorTemplateResult").html(html);
+}
+
+function displayAlbumError(message){
+	var data = {};
+	data.message = message;
+	
+	var source = $("#modalErrorTemplate").html();
+	var template = Handlebars.compile(source);
+	var html = template(data);
+	$("#modalErrorTemplateResult").html(html);
+}
+
+//#################### Handlebars helper functions ####################
+
 function setHandlebarsHelpers() {
 	// Check radio buttons when set value is the same as the radio button value
 	Handlebars.registerHelper("setChecked", function(value, currentValue) {
@@ -67,6 +93,13 @@ function setHandlebarsHelpers() {
 		return Math.floor(seconds) + " seconden geleden";
 	});
 }
+
+//#################### Default functions ####################
+
+$(document).ready(function() {
+	changePage();
+	setHandlebarsHelpers();
+});
 
 // Get url parameter function
 function getUrlParameter(sParam) {

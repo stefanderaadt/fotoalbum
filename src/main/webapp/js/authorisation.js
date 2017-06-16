@@ -8,6 +8,7 @@ $("#loginForm").submit(function(e) {
 	$.ajax({
 		type : "POST",
 		url : "rest/user/login",
+		async : false,
 		data : $("#loginForm").serialize(),
 		success : function(data) {
 			window.sessionStorage.setItem("sessionToken", data);
@@ -17,15 +18,27 @@ $("#loginForm").submit(function(e) {
 
 			// Change hash to #home
 			window.location.hash = "#home";
-
-			// Go to home page
-			changePage();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr.responseText);
-			console.log(thrownError);
+			switch (xhr.status) {
+				case 401:
+					displayError("Gebruikersnaam of wachtwoord is fout.");
+					break;
+				default: 
+					displayError("Fout bij het inloggen.");
+			}
 		}
 	});
+});
+
+/*
+ * #################### Logout ####################
+ */
+
+$("#logout").click(function(){
+	window.sessionStorage.setItem("sessionToken", null);
+	window.location.hash = "#login";
+	$("#navDropdown").hide();
 });
 
 /*
@@ -50,8 +63,7 @@ function getLoggedInUser() {
 					user = null;
 					break;
 				default: 
-					console.log(xhr.responseText);
-					console.log(thrownError);
+					displayError("Kan gebruikersdata niet ophalen.");
 			}
 		}
 	});
