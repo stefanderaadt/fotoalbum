@@ -150,6 +150,7 @@ $(document).on("click", "#album-delete-btn", function(){
  */
 
 function getPublicAlbums() {
+	$("#publicAlbumsTemplateResult").html(getSpinner());
 	$.ajax({
 		type : "GET",
 		url : "rest/album/public",
@@ -171,6 +172,8 @@ function getPublicAlbums() {
 }
 
 function getUserAlbums() {
+	$("#userAlbumsTemplateResult").html(getSpinner());
+	
 	$.ajax({
 		type : "GET",
 		url : "rest/album/user",
@@ -192,6 +195,8 @@ function getUserAlbums() {
 }
 
 function getSharedAlbums() {
+	$("#sharedAlbumsTemplateResult").html(getSpinner());
+	
 	$.ajax({
 		type : "GET",
 		url : "rest/album/shared",
@@ -213,6 +218,8 @@ function getSharedAlbums() {
 }
 
 function getAlbum() {
+	$("#albumTemplateResult").html(getSpinner());
+	
 	var code = localStorage.getItem("code");
 
 	// Check if parameter exists
@@ -242,6 +249,8 @@ function getAlbum() {
 }
 
 function getPicture() {
+	$("#pictureTemplateResult").html(getSpinner());
+	
 	var code = localStorage.getItem("code");
 
 	// Check if parameter exists

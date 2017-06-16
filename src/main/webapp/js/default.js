@@ -101,6 +101,10 @@ $(document).ready(function() {
 	setHandlebarsHelpers();
 });
 
+function getSpinner(){
+	return '<div style="text-align: center"><i class="fa fa-spinner fa-spin" style="font-size:40px"></i></div>';
+}
+
 // Get url parameter function
 function getUrlParameter(sParam) {
 	var sPageURL = decodeURIComponent(window.location.search.substring(1)), sURLVariables = sPageURL
