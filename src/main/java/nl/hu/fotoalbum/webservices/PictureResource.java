@@ -40,6 +40,10 @@ import nl.hu.fotoalbum.services.ServiceProvider;
 @Path("/picture")
 public class PictureResource {
 	private ObjectMapper mapper = new ObjectMapper();
+	
+	private int statusCount = 0;
+	private int pictureCount = 0;
+	private String currentEmail = "";
 
 	@GET
 	@Path("{picturecode}")
@@ -64,6 +68,8 @@ public class PictureResource {
 
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+		
+		currentEmail = email;
 
 		if (!a.getUser().getEmail().equals(email))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -71,6 +77,8 @@ public class PictureResource {
 		Map<String, List<FormDataBodyPart>> map = multipart.getFields();
 		Picture p = null;
 		String path = "";
+		
+		pictureCount = map.entrySet().size();
 
 		for (Map.Entry<String, List<FormDataBodyPart>> entry : map.entrySet()) {
 
@@ -88,9 +96,35 @@ public class PictureResource {
 
 				ServiceProvider.getPictureService().save(p);
 			}
+			
+			statusCount++;
+			
+			System.out.println(statusCount + "/" + pictureCount);
 		}
+		
+		currentEmail = "";
 
 		return Response.ok("uploaded").build();
+	}
+	
+	@GET
+	@Path("uploadstatus")
+	@RolesAllowed("user")
+	public Response getUploadStatus(@Context ContainerRequestContext requestCtx)
+			throws JsonProcessingException {
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+		
+		//System.out.println(currentEmail);
+		//System.out.println(email);
+		
+		//if(!email.equals(currentEmail)) return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		ObjectNode responseNode = mapper.createObjectNode();
+		
+		responseNode.put("statusCount", statusCount);
+		responseNode.put("statusCount", pictureCount);
+
+		return Response.ok(mapper.writeValueAsString(responseNode)).build();
 	}
 
 	@DELETE

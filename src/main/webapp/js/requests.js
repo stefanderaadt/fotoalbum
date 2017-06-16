@@ -59,6 +59,8 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 	// Authorize user
 	var token = window.sessionStorage.getItem("sessionToken");
 	xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+	
+	//var uploadStatusInterval = setInterval(getUploadStatus, 2000);
 
 	// Get upload bar
 	xhr.upload.addEventListener("progress", function(evt) {
@@ -97,9 +99,31 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 		} else {
 			displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
 		}
-	};
+		
+		//Stop interval
+		//clearInterval(uploadStatusInterval);
+	}
 
 	xhr.send(formData);
+}
+
+function getUploadStatus(){
+	console.log("interval");
+	
+	$.ajax({
+		type : "GET",
+		url : "rest/picture/uploadstatus",
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+		},
+		success : function(data) {
+			console.log(data);
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			console.log(xhr);
+		}
+	});
 }
 
 /*
