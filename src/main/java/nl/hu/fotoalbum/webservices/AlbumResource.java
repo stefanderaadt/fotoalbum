@@ -114,7 +114,7 @@ public class AlbumResource {
 	@RolesAllowed("user")
 	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteAlbum(@PathParam("albumcode") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
+	public Response deleteAlbum(@PathParam("code") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
 		
 		// Get users email/username from securitycontext
@@ -123,8 +123,12 @@ public class AlbumResource {
 		if (!a.getUser().getEmail().equals(email)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		ServiceProvider.getAlbumService().delete(a);
+		
+		ObjectNode responseNode = mapper.createObjectNode();
+		
+		responseNode.put("response", "deleted");
 
-		return Response.ok("deleted").build();
+		return Response.ok(mapper.writeValueAsString(responseNode)).build();
 	}
 
 	@GET

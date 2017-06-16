@@ -36,7 +36,9 @@ public class BaseDAO {
 	}
 
 	public void delete(final Object object) {
+		transaction = session.beginTransaction();
 		session.delete(object);
+		transaction.commit();
 	}
 
 	public <T> T get(final Class<T> type, final int id) {		

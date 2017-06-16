@@ -17,7 +17,11 @@ $("#loginForm").submit(function(e) {
 			getLoggedInUser();
 
 			// Change hash to #home
-			window.location.hash = "#home";
+			if(window.location.hash === "#home"){
+				changePage();
+			}else{
+				window.location.hash = "#home";
+			}
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			switch (xhr.status) {

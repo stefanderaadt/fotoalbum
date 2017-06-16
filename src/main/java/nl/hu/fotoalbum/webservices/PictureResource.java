@@ -95,13 +95,23 @@ public class PictureResource {
 
 	@DELETE
 	@RolesAllowed("user")
+	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteAlbum(@PathParam("picturecode") String code) throws JsonProcessingException {
+	public Response deleteAlbum(@PathParam("code") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Picture p = ServiceProvider.getPictureService().getByCode(code);
+		
+		// Get users email/username from securitycontext
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
+		
+		if (!p.getAlbum().getUser().getEmail().equals(email)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		ServiceProvider.getPictureService().delete(p);
 
-		return Response.ok("deleted").build();
+		ObjectNode responseNode = mapper.createObjectNode();
+		
+		responseNode.put("response", "deleted");
+
+		return Response.ok(mapper.writeValueAsString(responseNode)).build();
 	}
 
 	// Get fileextension of image

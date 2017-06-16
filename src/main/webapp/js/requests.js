@@ -2,49 +2,46 @@
 #################### Form Requests ####################
  */
 
-$("#albumForm")
-		.submit(
-				function(e) {
-					e.preventDefault();
+$("#albumForm").submit(function(e) {
+	e.preventDefault();
 
-					var pictures = $("#inputPictures").prop("files");
-					var data = $("#albumForm").serialize();
-					var sharedUsers = [];
+	var pictures = $("#inputPictures").prop("files");
+	var data = $("#albumForm").serialize();
+	var sharedUsers = [];
 
-					$(this).find(".add-shared-users-table").find("tr").each(
-							function() {
-								var columns = $(this).find('td');
-								sharedUsers.push($(columns[0]).text())
-							});
+	$(this).find(".add-shared-users-table").find("tr").each(
+			function() {
+				var columns = $(this).find('td');
+				sharedUsers.push($(columns[0]).text())
+			});
 
-					data += "&sharedusers=" + JSON.stringify(sharedUsers);
+	data += "&sharedusers=" + JSON.stringify(sharedUsers);
 
-					$
-							.ajax({
-								type : "POST",
-								url : "rest/album",
-								data : data,
-								beforeSend : function(xhr) {
-									var token = window.sessionStorage
-											.getItem("sessionToken");
-									xhr.setRequestHeader('Authorization',
-											'Bearer ' + token);
-								},
-								success : function(data) {
-									uploadPictures(pictures, data.code);
-								},
-								error : function(xhr, ajaxOptions, thrownError) {
-									displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
-								}
-							});
+	$.ajax({
+		type : "POST",
+		url : "rest/album",
+		data : data,
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage
+					.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization',
+					'Bearer ' + token);
+		},
+		success : function(data) {
+			uploadPictures(pictures, data.code);
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
+		}
+	});
 
-				});
+});
 
 // Upload pictures
-function uploadPictures(pictures, albumCode) {
+function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgressBarResult") {
 	var formData = new FormData();
 	var percentComplete = 0;
-	printProgressBar("#uploadAlbumProgressBarResult", percentComplete);
+	printProgressBar(progressBarId, percentComplete);
 
 	for (var i = 0; i < pictures.length; i++) {
 		var file = pictures[i];
@@ -68,7 +65,7 @@ function uploadPictures(pictures, albumCode) {
 		if (evt.lengthComputable) {
 			percentComplete = evt.loaded / evt.total;
 			percentComplete = parseInt(percentComplete * 50);
-			printProgressBar("#uploadAlbumProgressBarResult", percentComplete);
+			printProgressBar(progressBarId, percentComplete);
 		}
 	}, false);
 
@@ -76,18 +73,27 @@ function uploadPictures(pictures, albumCode) {
 		if (xhr.status === 200) {
 			// File(s) uploaded.
 			precentComplete = 100;
-			printProgressBar("#uploadAlbumProgressBarResult", percentComplete);
+			printProgressBar(progressBarId, percentComplete);
 
 			// Set code
 			localStorage.setItem("code", albumCode);
 
 			// Go to album page
-			window.location.hash = "#album";
+			if(window.location.hash === "#album"){
+				changePage();
+			}else{
+				window.location.hash = "#album";
+			}
 			
 			$("#newAlbumModal").modal("hide");
 
 			// Display success
-			displaySuccess("Nieuw album opgeslagen!");
+			if (progressBarId === "#uploadAlbumProgressBarResult"){
+				displaySuccess("Nieuw album opgeslagen!");
+			}else{
+				displaySuccess("Afbeeldingen geüpload!");
+			}
+			
 		} else {
 			displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
 		}
@@ -100,85 +106,115 @@ function uploadPictures(pictures, albumCode) {
  * #################### Update Requests ####################
  */
 
-$(document)
-		.on(
-				"click",
-				"#album-save-btn",
-				function() {
-					var data = "";
-					var code = $(this).attr("code");
-					var sharedUsers = [];
+$(document).on("click", "#album-save-btn", function() {
+	var data = "";
+	var code = $(this).attr("code");
+	var sharedUsers = [];
 
-					var parent = $(this).parent().parent();
+	var parent = $(this).parent().parent();
 
-					data += "title=" + parent.find("#edit-title-input").val();
+	data += "title=" + parent.find("#edit-title-input").val();
 
-					data += "&description="
-							+ parent.find("#edit-desc-input").val();
+	data += "&description="
+			+ parent.find("#edit-desc-input").val();
 
-					data += "&shareType="
-							+ parent.find("input[name=share-type]:checked")
-									.val();
+	data += "&shareType="
+			+ parent.find("input[name=share-type]:checked")
+					.val();
 
-					parent.find(".add-shared-users-table").find("tr").each(
-							function() {
-								var columns = $(this).find('td');
-								sharedUsers.push($(columns[0]).text())
-							});
+	parent.find(".add-shared-users-table").find("tr").each(
+			function() {
+				var columns = $(this).find('td');
+				sharedUsers.push($(columns[0]).text())
+			});
 
-					data += "&sharedusers=" + JSON.stringify(sharedUsers);
+	data += "&sharedusers=" + JSON.stringify(sharedUsers);
 
-					$
-							.ajax({
-								type : "PUT",
-								url : "rest/album/" + code,
-								data : data,
-								beforeSend : function(xhr) {
-									var token = window.sessionStorage
-											.getItem("sessionToken");
-									xhr.setRequestHeader('Authorization',
-											'Bearer ' + token);
-								},
-								success : function(data) {
-									displaySuccess("Album succesvol aangepast.");
-									changePage();
-								},
-								error : function(xhr, ajaxOptions, thrownError) {
-									displayError("Er is iets fout gegaan met het aanpassen van dit album.");
-								}
-							});
-				});
+	$.ajax({
+		type : "PUT",
+		url : "rest/album/" + code,
+		data : data,
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage
+					.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization',
+					'Bearer ' + token);
+		},
+		success : function(data) {
+			displaySuccess("Album succesvol aangepast.");
+			changePage();
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			displayError("Er is iets fout gegaan met het aanpassen van dit album.");
+		}
+	});
+});
+
+$(document).on("click", "#album-picture-save-btn", function(){
+	var code = $(this).attr("code");
+	
+	var pictures = $(this).parent().find("#addPictures").prop("files");
+	
+	uploadPictures(pictures, code, "#uploadPicturesProgressBarResult");
+});
 
 /*
  * #################### Delete Requests ####################
  */
 
-$(document)
-		.on(
-				"click",
-				"#album-delete-btn",
-				function() {
-					var code = $(this).attr("code");
+//Album verwijderen
+$(document).on("click", "#album-delete-btn", function() {
+	var code = $(this).attr("code");
 
-					$
-							.ajax({
-								type : "DELETE",
-								url : "rest/album/" + code,
-								beforeSend : function(xhr) {
-									var token = window.sessionStorage
-											.getItem("sessionToken");
-									xhr.setRequestHeader('Authorization',
-											'Bearer ' + token);
-								},
-								success : function(data) {
-									window.location.hash = "#home";
-									displaySuccess("Album verwijderd aangepast.");
-								},
-								error : function(xhr, ajaxOptions, thrownError) {
-									displayError("Er is iets fout gegaan met het verwijderen van dit album.");
-								}
-							});
-				});
+	$.ajax({
+		type : "DELETE",
+		url : "rest/album/" + code,
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage
+					.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization',
+					'Bearer ' + token);
+		},
+		success : function(data) {
+			if(data.response === "deleted"){
+				window.location.hash = "#home";
+				displaySuccess("Album verwijderd.");
+			}else{
+				displayError("Er is iets fout gegaan met het verwijderen van dit album.");
+			}
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			displayError("Er is iets fout gegaan met het verwijderen van dit album.");
+		}
+	});
+});
+
+//Afbeelding verwijderen
+$(document).on("click", "#picture-delete-btn", function() {
+	var code = $(this).attr("code");
+
+	$.ajax({
+		type : "DELETE",
+		url : "rest/album/" + code,
+		beforeSend : function(xhr) {
+			var token = window.sessionStorage
+					.getItem("sessionToken");
+			xhr.setRequestHeader('Authorization',
+					'Bearer ' + token);
+		},
+		success : function(data) {
+			if(data.response === "deleted"){
+				window.location.hash = "#home";
+				displaySuccess("Afbeelding verwijderd.");
+			}else{
+				displayError("Er is iets fout gegaan met het verwijderen van deze afbeelding.");
+			}
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+			displayError("Er is iets fout gegaan met het verwijderen van deze afbeelding.");
+		}
+	});
+});
 
 /*
  * #################### Get Requests ####################
