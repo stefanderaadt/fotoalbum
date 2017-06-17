@@ -17,7 +17,7 @@ $("#loginForm").submit(function(e) {
 			getLoggedInUser();
 
 			//Load new page
-			if(window.location.hash === "#login" || window.location.hash === "#register"){
+			if(window.location.hash === "#login" || window.location.hash === "#register" || window.location.hash === ""){
 				window.location.hash = "#home";
 			}else{
 				changePage();
