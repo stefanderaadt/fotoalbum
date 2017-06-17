@@ -79,7 +79,7 @@ public class PictureResource {
 				try (InputStream fileContent = part.getEntityAs(InputStream.class)) {
 					String extension = getExtension(part.getName());
 					String id = getImgurContent(fileContent, extension);
-					path = "http://i.imgur.com/" + id + "." + extension.toLowerCase();
+					path = "https://i.imgur.com/" + id + "." + extension.toLowerCase();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
