@@ -1,6 +1,5 @@
 package nl.hu.fotoalbum.services;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,9 +9,7 @@ import nl.hu.fotoalbum.persistence.AlbumDAO;
 import nl.hu.fotoalbum.persistence.Picture;
 import nl.hu.fotoalbum.persistence.User;
 
-public class AlbumService {
-	final private String uploadFolder = "C:/Users/Stefan/Documents/School/WAC/uploads/";
-	
+public class AlbumService {	
 	AlbumDAO albumDAO = new AlbumDAO();
 	
 	public Integer save(Album a){

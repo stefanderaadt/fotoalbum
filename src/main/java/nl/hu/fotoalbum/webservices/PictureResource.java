@@ -2,10 +2,7 @@ package nl.hu.fotoalbum.webservices;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -30,7 +27,6 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import nl.hu.fotoalbum.persistence.Album;
@@ -83,7 +79,7 @@ public class PictureResource {
 				try (InputStream fileContent = part.getEntityAs(InputStream.class)) {
 					String extension = getExtension(part.getName());
 					String id = getImgurContent(fileContent, extension);
-					path = "http://i.imgur.com/" + id + "." + extension;
+					path = "http://i.imgur.com/" + id + "." + extension.toLowerCase();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

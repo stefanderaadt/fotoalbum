@@ -1,15 +1,11 @@
 package nl.hu.fotoalbum.services;
 
-import java.io.File;
 import java.util.Random;
 
-import nl.hu.fotoalbum.persistence.Album;
 import nl.hu.fotoalbum.persistence.Picture;
 import nl.hu.fotoalbum.persistence.PictureDAO;
 
 public class PictureService {
-	final private String uploadFolder = "D:/Documents/school/wac/uploads/";
-	
 	PictureDAO pictureDAO = new PictureDAO();
 	
 	public Integer save(Picture p){		

@@ -1,7 +1,6 @@
 package nl.hu.fotoalbum.webservices;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -82,7 +81,7 @@ public class UserResource {
 		
 		User u = new User(firstname, lastname, email, password);
 		
-		int id = ServiceProvider.getUserService().save(u);
+		ServiceProvider.getUserService().save(u);
 		
 		return Response.ok("success").build();
 	}
