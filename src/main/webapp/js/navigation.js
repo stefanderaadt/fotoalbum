@@ -15,6 +15,7 @@ function pageChangedEvent(hash){
 			break;
 			
 		case "#album":
+			checkAlbumCode();
 			getAlbum();
 			break;
 			

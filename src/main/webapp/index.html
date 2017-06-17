@@ -8,7 +8,7 @@
 	<title>Index</title>
 	
 	<!-- Bootstrap -->
-	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/yeti/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	
 	<link href="css/main.css" rel="stylesheet">
@@ -21,7 +21,7 @@
 	    <![endif]-->
 	</head>
 	<body>
-		<div class="container">
+		<div class="fullwidth-container">
 			<header>
 				<nav class="navbar navbar-default" id="navigation">
 					<div class="container-fluid">
@@ -50,7 +50,7 @@
 									data-toggle="dropdown" role="button" aria-haspopup="true"
 									aria-expanded="false"><span id="navUsername"></span><span class="caret"></span></a>
 									<ul class="dropdown-menu">
-										<li><div id="logout" class="pointer margin-left-8">Logout</div></li>
+										<li><div id="logout" class="pointer margin-left-8" style="color: #ffffff; padding: 8px;">Logout</div></li>
 									</ul>
 								</li>
 							</ul>
@@ -60,6 +60,8 @@
 					<!-- /.container-fluid -->
 				</nav>
 			</header>
+		</div>
+		<div class="container">
 			<div id="pages">
 				<script id="successTemplate" type="text/x-handlebars-template">
 					<div class="alert alert-success fade in">
@@ -253,6 +255,11 @@
 							</div>
 							<hr>
 							<div class="row">
+								<label>Deel dit album via de URL:</label>
+								<input type="text" onClick="this.select();" class="form-control" name="share-album-url" value="{{{displaySharePath code}}}" readonly>
+							</div>
+							<hr>
+							<div class="row">
 								<label for="inputPictures">Voeg afbeeldingen toe: </label> <input type="file"
 									name="pictures" multiple="true" class="form-control-file"
 									aria-describedby="fileHelp" id="addPictures">
@@ -275,7 +282,7 @@
 											<div class="edit-image">
 												<div class="btn btn-responsive btn-info edit-image-btn">&middot;&middot;&middot;</div>
 												<div class="picture-options" style="display: none">
-													<div class="btn btn-danger" id="picture-delete-btn" code="{{code}}">Verwijderen</div>
+													<div class="btn btn-danger picture-delete-btn" code="{{code}}">Verwijderen</div>
 												</div>
 											</div>
 										{{/if}}
@@ -303,7 +310,7 @@
 						{{#if isFromUser}}
 							<hr>
 							<div class="col-md-4">
-								<div class="btn btn-danger" code="{{code}}">Verwijderen</div>
+								<div class="btn btn-danger picture-delete-btn" code="{{code}}">Verwijderen</div>
 							</div>
 						{{/if}}
 					</script>

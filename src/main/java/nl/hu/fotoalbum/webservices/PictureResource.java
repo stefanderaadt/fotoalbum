@@ -40,10 +40,6 @@ import nl.hu.fotoalbum.services.ServiceProvider;
 @Path("/picture")
 public class PictureResource {
 	private ObjectMapper mapper = new ObjectMapper();
-	
-	private int statusCount = 0;
-	private int pictureCount = 0;
-	private String currentEmail = "";
 
 	@GET
 	@Path("{picturecode}")
@@ -53,6 +49,8 @@ public class PictureResource {
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 		
 		Picture p = ServiceProvider.getPictureService().getByCode(code);
+		
+		if(p == null) return Response.status(Response.Status.NOT_FOUND).build();
 
 		return Response.ok(pictureToJson(p, email)).build();
 	}
@@ -65,11 +63,11 @@ public class PictureResource {
 	public Response uploadPicture(@PathParam("albumcode") String albumCode, FormDataMultiPart multipart,
 			@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(albumCode);
+		
+		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
 
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
-		
-		currentEmail = email;
 
 		if (!a.getUser().getEmail().equals(email))
 			return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -77,8 +75,6 @@ public class PictureResource {
 		Map<String, List<FormDataBodyPart>> map = multipart.getFields();
 		Picture p = null;
 		String path = "";
-		
-		pictureCount = map.entrySet().size();
 
 		for (Map.Entry<String, List<FormDataBodyPart>> entry : map.entrySet()) {
 
@@ -96,35 +92,9 @@ public class PictureResource {
 
 				ServiceProvider.getPictureService().save(p);
 			}
-			
-			statusCount++;
-			
-			System.out.println(statusCount + "/" + pictureCount);
 		}
-		
-		currentEmail = "";
 
 		return Response.ok("uploaded").build();
-	}
-	
-	@GET
-	@Path("uploadstatus")
-	@RolesAllowed("user")
-	public Response getUploadStatus(@Context ContainerRequestContext requestCtx)
-			throws JsonProcessingException {
-		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
-		
-		//System.out.println(currentEmail);
-		//System.out.println(email);
-		
-		//if(!email.equals(currentEmail)) return Response.status(Response.Status.UNAUTHORIZED).build();
-
-		ObjectNode responseNode = mapper.createObjectNode();
-		
-		responseNode.put("statusCount", statusCount);
-		responseNode.put("statusCount", pictureCount);
-
-		return Response.ok(mapper.writeValueAsString(responseNode)).build();
 	}
 
 	@DELETE
@@ -133,6 +103,8 @@ public class PictureResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteAlbum(@PathParam("code") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Picture p = ServiceProvider.getPictureService().getByCode(code);
+		
+		if(p == null) return Response.status(Response.Status.NOT_FOUND).build();
 		
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();

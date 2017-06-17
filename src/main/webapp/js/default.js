@@ -53,6 +53,14 @@ function setHandlebarsHelpers() {
 			return '';
 		}
 	});
+	
+	//Return share path to share album
+	Handlebars.registerHelper("displaySharePath", function(code) {
+		var url = window.location.href;
+		url = url.split('#');
+		
+		return url[0]+'?c='+code+'#album';
+	});
 
 	Handlebars.registerHelper("formatDate", function(currentDate) {
 		var date = new Date(currentDate);
@@ -101,6 +109,17 @@ $(document).ready(function() {
 	setHandlebarsHelpers();
 });
 
+//Get album code if user put this in the URL
+function checkAlbumCode(){
+	var code = getUrlParameter("c");
+	
+	if(code === null || typeof code === 'undefined') return;
+	
+	localStorage.setItem("code", code);
+	
+	window.location.href = removeUrlParameter(window.location.href);
+}
+
 function getSpinner(){
 	return '<div style="text-align: center"><i class="fa fa-spinner fa-spin" style="font-size:40px"></i></div>';
 }
@@ -129,3 +148,13 @@ function getUrlParameter(sParam) {
 		}
 	}
 };
+
+//Remove url parameter function
+function removeUrlParameter(url) {
+	  var urlParts = url.split('?');
+	  var urlParts2 = urlParts[1].split('#');
+	  
+	  var url = urlParts[0]+"#"+urlParts2[1];
+	  
+	  return url;
+	}

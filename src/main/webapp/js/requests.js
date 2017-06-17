@@ -214,12 +214,12 @@ $(document).on("click", "#album-delete-btn", function() {
 });
 
 //Afbeelding verwijderen
-$(document).on("click", "#picture-delete-btn", function() {
+$(document).on("click", ".picture-delete-btn", function() {
 	var code = $(this).attr("code");
 
 	$.ajax({
 		type : "DELETE",
-		url : "rest/album/" + code,
+		url : "rest/picture/" + code,
 		beforeSend : function(xhr) {
 			var token = window.sessionStorage
 					.getItem("sessionToken");
@@ -228,7 +228,12 @@ $(document).on("click", "#picture-delete-btn", function() {
 		},
 		success : function(data) {
 			if(data.response === "deleted"){
-				window.location.hash = "#home";
+				if(window.location.hash === "#album"){
+					changePage();
+				}else{
+					window.location.hash = "#home";
+				}
+				
 				displaySuccess("Afbeelding verwijderd.");
 			}else{
 				displayError("Er is iets fout gegaan met het verwijderen van deze afbeelding.");

@@ -37,6 +37,8 @@ public class AlbumResource {
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 
 		Album a = new Album(title, description, shareType, ServiceProvider.getUserService().getByEmail(email));
+		
+		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
 
 		if (shareType.equals("U")) {
 			a.setSharedUserIds(getSharedUsers(sharedUsers));
@@ -54,11 +56,11 @@ public class AlbumResource {
 	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAlbum(@PathParam("code") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
-		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
-		
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
 		
 		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
+		
+		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 		
 		User u = ServiceProvider.getUserService().getByEmail(email);
 		
@@ -89,6 +91,8 @@ public class AlbumResource {
 			@FormParam("sharedusers") String sharedUsers,
 			@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
+		
+		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
 
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
@@ -116,6 +120,8 @@ public class AlbumResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteAlbum(@PathParam("code") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
 		Album a = ServiceProvider.getAlbumService().getByCode(code);
+		
+		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
 		
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();

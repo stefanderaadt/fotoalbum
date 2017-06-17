@@ -16,11 +16,11 @@ $("#loginForm").submit(function(e) {
 			// Get logged in user
 			getLoggedInUser();
 
-			// Change hash to #home
-			if(window.location.hash === "#home"){
-				changePage();
-			}else{
+			//Load new page
+			if(window.location.hash === "#login" || window.location.hash === "#register"){
 				window.location.hash = "#home";
+			}else{
+				changePage();
 			}
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
