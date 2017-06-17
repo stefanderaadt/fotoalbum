@@ -1,11 +1,11 @@
 /* Albums list */
-#albums .album, #home .album {
+#albums .album, #home .album, #shared .album{
 	padding: 16px;
 	overflow: hidden;
 	margin-bottom: 16px;
 }
 
-#albums .image, #home .image {
+#albums .image, #home .image, #shared .image{
 	padding: 0;
 }
 
