@@ -50,7 +50,7 @@ function setHandlebarsHelpers() {
 		if (value === 'U') {
 			return 'style="display: block"';
 		} else {
-			return '';
+			return 'style="display: none"';
 		}
 	});
 	

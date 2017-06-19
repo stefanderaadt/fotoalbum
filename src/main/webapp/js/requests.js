@@ -186,8 +186,10 @@ $(document).on("click", "#album-picture-save-btn", function(){
  * #################### Delete Requests ####################
  */
 
-//Album verwijderen
+//Delete album
 $(document).on("click", "#album-delete-btn", function() {
+	if(!confirm("Weet je zeker dat je dit album wilt verwijderen?")) return;
+	
 	var code = $(this).attr("code");
 
 	$.ajax({
@@ -213,8 +215,9 @@ $(document).on("click", "#album-delete-btn", function() {
 	});
 });
 
-//Afbeelding verwijderen
+//Delete image
 $(document).on("click", ".picture-delete-btn", function() {
+	if(!confirm("Weet je zeker dat je deze afbeelding wilt verwijderen?")) return;
 	var code = $(this).attr("code");
 
 	$.ajax({
