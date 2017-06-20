@@ -27,6 +27,43 @@ $(document).on("click", ".delete-shared-users-btn", function() {
 	$(this).parent().parent().remove();
 });
 
+/*var counter = 0;
+
+$('#drop').bind({
+    dragenter: function(ev) {
+        ev.preventDefault(); // needed for IE
+        counter++;
+        $(this).addClass('red');
+    },
+
+    dragleave: function() {
+        counter--;
+        if (counter === 0) { 
+            $(this).removeClass('red');
+        }
+    }
+});*/
+
+// Drop picture events
+$("html").on("drop", function(e) {
+    e.preventDefault();  
+    e.stopPropagation();
+    alert("Dropped!");
+});
+
+var lastenter;
+$("html").on("dragenter", function (event) {
+    lastenter = event.target;
+    $("#dropzone").show();
+});
+
+$("html").on("dragleave", function (event) {
+    if (lastenter === event.target) {
+    	$("#dropzone").hide();
+    	console.log("leave");
+    }
+});
+
 // Edit album events
 $(document).on("click", ".edit-image-btn", function() {
 	$(this).parent().find(".picture-options").toggle();
