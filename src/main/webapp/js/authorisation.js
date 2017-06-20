@@ -26,7 +26,7 @@ $("#loginForm").submit(function(e) {
 		error : function(xhr, ajaxOptions, thrownError) {
 			switch (xhr.status) {
 				case 401:
-					displayError("Gebruikersnaam of wachtwoord is fout.");
+					displayError("Email of wachtwoord is fout.");
 					break;
 				default: 
 					displayError("Fout bij het inloggen.");

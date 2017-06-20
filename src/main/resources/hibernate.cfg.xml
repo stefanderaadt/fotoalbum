@@ -8,13 +8,13 @@
    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 
    <!-- Assume test is the database name -->
-   <!--<property name="hibernate.connection.url">jdbc:postgresql://ec2-46-137-97-169.eu-west-1.compute.amazonaws.com:5432/d798j1un8odcj0?sslmode=require</property>
+   <property name="hibernate.connection.url">jdbc:postgresql://ec2-46-137-97-169.eu-west-1.compute.amazonaws.com:5432/d798j1un8odcj0?sslmode=require</property>
    <property name="hibernate.connection.username">xldhvzcnkaqdaw</property>
-   <property name="hibernate.connection.password">87d2a2733eb622eb5b16de69700b68fdbc1a919ac12d1ab3430c98b30f28dca4</property>-->
+   <property name="hibernate.connection.password">87d2a2733eb622eb5b16de69700b68fdbc1a919ac12d1ab3430c98b30f28dca4</property>
    
-   <property name="hibernate.connection.url">jdbc:postgresql://192.168.1.149:5432/fotoalbum</property>
+   <!--<property name="hibernate.connection.url">jdbc:postgresql://192.168.1.149:5432/fotoalbum</property>
    <property name="hibernate.connection.username">postgres</property>
-   <property name="hibernate.connection.password">qwerty</property>
+   <property name="hibernate.connection.password">postgres</property>-->
    
    <property name="hibernate.current_session_context_class">org.hibernate.context.internal.ThreadLocalSessionContext</property>
 

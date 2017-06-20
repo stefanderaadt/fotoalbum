@@ -14,6 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
+import org.jsoup.Jsoup;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -76,6 +78,10 @@ public class UserResource {
 		if (ServiceProvider.getUserService().getByEmail(email) != null) {
 			return Response.status(Response.Status.CONFLICT).build();
 		}
+		
+		firstname = Jsoup.parse(firstname).text();
+		lastname = Jsoup.parse(lastname).text();
+		email = Jsoup.parse(email).text();
 		
 		password = hashSha256(password);
 		

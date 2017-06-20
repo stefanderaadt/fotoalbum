@@ -165,8 +165,8 @@ $(document).on("click", "#album-save-btn", function() {
 					'Bearer ' + token);
 		},
 		success : function(data) {
-			displaySuccess("Album succesvol aangepast.");
 			changePage();
+			displaySuccess("Album succesvol aangepast.");
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			displayError("Er is iets fout gegaan met het aanpassen van dit album.");

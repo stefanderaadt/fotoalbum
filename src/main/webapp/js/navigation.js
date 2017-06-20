@@ -28,6 +28,11 @@ function pageChangedEvent(hash){
 function changePage(){
 	var hash = "#home";
 	
+	$("#successTemplateResult").empty();
+	$("#errorTemplateResult").empty();
+	
+	$("#navbar-collapse").removeClass("in");
+	
 	hash = window.location.hash;
 	
 	getLoggedInUser();

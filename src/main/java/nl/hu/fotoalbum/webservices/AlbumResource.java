@@ -12,6 +12,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jsoup.Jsoup;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +38,9 @@ public class AlbumResource {
 		// Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 
+		title = Jsoup.parse(title).text();
+		description = Jsoup.parse(description).text();
+		
 		Album a = new Album(title, description, shareType, ServiceProvider.getUserService().getByEmail(email));
 		
 		if(a == null) return Response.status(Response.Status.NOT_FOUND).build();
@@ -98,6 +103,9 @@ public class AlbumResource {
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 
 		if (!a.getUser().getEmail().equals(email)) return Response.status(Response.Status.UNAUTHORIZED).build();
+		
+		title = Jsoup.parse(title).text();
+		description = Jsoup.parse(description).text();
 
 		a.setTitle(title);
 		a.setDescription(description);
