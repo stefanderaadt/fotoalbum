@@ -154,7 +154,6 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 	//Change progressbar
 	var add = Math.round(40/length);
 	var counter = 0;
-	
 	timeout = setInterval(function(){
 		counter++;
 		percentComplete += add;
@@ -175,30 +174,37 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
  * #################### Update Requests ####################
  */
 
+//Update album
 $(document).on("click", "#album-save-btn", function() {
+	//Get default variables
 	var data = "";
 	var code = $(this).attr("code");
 	var sharedUsers = [];
-
 	var parent = $(this).parent().parent();
 
+	//Get title from input
 	data += "title=" + parent.find("#edit-title-input").val();
 
+	//Get description from input
 	data += "&description="
 			+ parent.find("#edit-desc-input").val();
 
+	//Get sharetype from radio buttons
 	data += "&shareType="
 			+ parent.find("input[name=share-type]:checked")
 					.val();
 
+	//Get sharedusers
 	parent.find(".add-shared-users-table").find("tr").each(
 			function() {
 				var columns = $(this).find('td');
 				sharedUsers.push($(columns[0]).text())
 			});
 
+	//Stringify sharedusers
 	data += "&sharedusers=" + JSON.stringify(sharedUsers);
 
+	//Update request to back-end
 	$.ajax({
 		type : "PUT",
 		url : "rest/album/" + code,
@@ -219,11 +225,15 @@ $(document).on("click", "#album-save-btn", function() {
 	});
 });
 
+//Upload new pictures
 $(document).on("click", "#album-picture-save-btn", function(){
+	//Get album code
 	var code = $(this).attr("code");
 	
+	//Get pictures
 	var pictures = $(this).parent().parent().find("#addPictures").prop("files");
 
+	//Upload pictures
 	uploadPictures(pictures, code, "#uploadPicturesProgressBarResult");
 });
 
@@ -233,10 +243,13 @@ $(document).on("click", "#album-picture-save-btn", function(){
 
 //Delete album
 $(document).on("click", "#album-delete-btn", function() {
+	//Ask user if he wants to delete the album
 	if(!confirm("Weet je zeker dat je dit album wilt verwijderen?")) return;
 	
+	//Get album code
 	var code = $(this).attr("code");
 
+	//Delete request to back-end
 	$.ajax({
 		type : "DELETE",
 		url : "rest/album/" + code,
@@ -262,9 +275,13 @@ $(document).on("click", "#album-delete-btn", function() {
 
 //Delete image
 $(document).on("click", ".picture-delete-btn", function() {
+	//Ask user if he wants to delete the picture
 	if(!confirm("Weet je zeker dat je deze afbeelding wilt verwijderen?")) return;
+	
+	//Get picture code
 	var code = $(this).attr("code");
 
+	//Delete request to back-end
 	$.ajax({
 		type : "DELETE",
 		url : "rest/picture/" + code,
@@ -297,8 +314,12 @@ $(document).on("click", ".picture-delete-btn", function() {
  * #################### Get Requests ####################
  */
 
+//Get public albums
 function getPublicAlbums() {
+	//Add loading icon to screen
 	$("#publicAlbumsTemplateResult").html(getSpinner());
+	
+	//Get public albums request
 	$.ajax({
 		type : "GET",
 		url : "rest/album/public",
@@ -307,20 +328,26 @@ function getPublicAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			//Print data to screen
 			var source = $("#publicAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
 			var html = template(data);
 			$("#publicAlbumsTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
+			//Remove loading icon and give error
+			$("#publicAlbumsTemplateResult").html("");
 			displayError("Albums kunnen niet worden opgehaald.");
 		}
 	});
 }
 
+//Get albums from user
 function getUserAlbums() {
+	//Add loading icon to screen
 	$("#userAlbumsTemplateResult").html(getSpinner());
 
+	//Get user albums request
 	$.ajax({
 		type : "GET",
 		url : "rest/album/user",
@@ -329,18 +356,23 @@ function getUserAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			//Print data to screen
 			var source = $("#userAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
 			var html = template(data);
 			$("#userAlbumsTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
+			//Remove loading icon and give error
+			$("#userAlbumsTemplateResult").html("");
 			displayError("Albums kunnen niet worden opgehaald.");
 		}
 	});
 }
 
+//Get shared albums with user
 function getSharedAlbums() {
+	//Add loading icon to screen
 	$("#sharedAlbumsTemplateResult").html(getSpinner());
 
 	$.ajax({
@@ -351,28 +383,36 @@ function getSharedAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			//Print data to screen
 			var source = $("#sharedAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
 			var html = template(data);
 			$("#sharedAlbumsTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
+			//Remove loading icon and give error
+			$("#sharedAlbumsTemplateResult").html("");
 			displayError("Albums kunnen niet worden opgehaald.");
 		}
 	});
 }
 
+//Get album
 function getAlbum() {
+	//Add loading icon to screen
 	$("#albumTemplateResult").html(getSpinner());
 
+	//Get album code from localstorage
 	var code = localStorage.getItem("code");
 
 	// Check if parameter exists
 	if (code === null || typeof code === 'undefined') {
+		//Go to 404 page if parameter doesn't exist
 		window.location.hash = "#404";
 		return;
 	}
 
+	//Get album request
 	$.ajax({
 		type : "GET",
 		url : "rest/album/" + code,
@@ -381,28 +421,36 @@ function getAlbum() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			//Print data to screen
 			var source = $("#albumTemplate").html();
 			var template = Handlebars.compile(source);
 			var html = template(data);
 			$("#albumTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
+			//Remove loading icon and give error
+			$("#albumTemplateResult").html("");
 			displayError("Fout bij het ophalen van dit album.");
 		}
 	});
 }
 
+//Get picture
 function getPicture() {
+	//Add loading icon to screen
 	$("#pictureTemplateResult").html(getSpinner());
 
+	//Get picture code from localstorage
 	var code = localStorage.getItem("code");
 
 	// Check if parameter exists
 	if (code === null || typeof code === 'undefined') {
+		//Go to 404 page if parameter doesn't exist
 		window.location.hash = "#404";
 		return;
 	}
 
+	//Get picture request
 	$.ajax({
 		type : "GET",
 		url : "rest/picture/" + code,
@@ -411,12 +459,15 @@ function getPicture() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			//Print data to screen
 			var source = $("#pictureTemplate").html();
 			var template = Handlebars.compile(source);
 			var html = template(JSON.parse(data));
 			$("#pictureTemplateResult").html(html);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
+			//Remove loading icon and give error
+			$("#pictureTemplateResult").html("");
 			displayError("Fout bij het ophalen van deze afbeelding.");
 		}
 	});
@@ -426,18 +477,29 @@ function getPicture() {
  * #################### Register Form ####################
  */
 
+//Register new user
 $("#registerForm").submit(function(e) {
+	//Stop default form
 	e.preventDefault();
 
+	//Register user request
 	$.ajax({
 		type : "POST",
 		url : "rest/user/register",
 		data : $("#registerForm").serialize(),
 		success : function(data) {
-			console.log(data);
+			if(data.response === "success"){
+				//Go to login page
+				window.location.hash = "#login";
+				displaySuccess("Registreren gelukt! Je kan nu inloggen.");
+			}else{
+				//Give error to user
+				displayError("Er is iets fout gegaan bij het registeren.");
+			}
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			displayError("Fout bij het registreren.");
+			//Give error to user
+			displayError("Er is iets fout gegaan bij het registeren.");
 		}
 	});
 });

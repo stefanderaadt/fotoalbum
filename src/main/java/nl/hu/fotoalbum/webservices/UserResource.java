@@ -18,6 +18,7 @@ import org.jsoup.Jsoup;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -30,26 +31,37 @@ import nl.hu.fotoalbum.services.ServiceProvider;
 public class UserResource {
 	final static public Key key = MacProvider.generateKey();
 	
+	private ObjectMapper mapper = new ObjectMapper();
+
+	//Get logged in user
 	@GET
 	@RolesAllowed("user")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getCurrentUserInfo(@Context ContainerRequestContext requestCtx) throws JsonProcessingException{
-		ObjectMapper mapper = new ObjectMapper();
+	public Response getCurrentUserInfo(@Context ContainerRequestContext requestCtx) throws JsonProcessingException{		
+		//Get users email/username from securitycontext
 		String email = requestCtx.getSecurityContext().getUserPrincipal().getName();
 		
+		//Get user by email
 		User u = ServiceProvider.getUserService().getByEmail(email);
 		
+		//Return user as json string
 		return Response.ok(mapper.writeValueAsString(u)).build();
 	}
 
+	//User login
 	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response authenticateUser(@FormParam("email") String email, @FormParam("password") String password) {
+		//Try to get user
 		try {
+			//Hash password with sha256
 			password = hashSha256(password);
 			
+			//Get user with email and password
 			User u = ServiceProvider.getUserService().login(email, password);
+			
+			//Check if user is found
 			if (u == null) {
 				throw new IllegalArgumentException("No user found!");
 			}
@@ -68,30 +80,41 @@ public class UserResource {
 		}
 	}
 
+	//Register new user
 	@POST
 	@Path("/register")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response register(@FormParam("firstname") String firstname, @FormParam("lastname") String lastname,
-			@FormParam("email") String email, @FormParam("password") String password) {
+			@FormParam("email") String email, @FormParam("password") String password) throws JsonProcessingException {
 		
-		//Check if user doesn't exist allready
+		//Check if user doesn't exist
 		if (ServiceProvider.getUserService().getByEmail(email) != null) {
 			return Response.status(Response.Status.CONFLICT).build();
 		}
 		
+		//Remove html tags from string
 		firstname = Jsoup.parse(firstname).text();
 		lastname = Jsoup.parse(lastname).text();
 		email = Jsoup.parse(email).text();
 		
+		//Hash password with sha256
 		password = hashSha256(password);
 		
+		//Create new user object
 		User u = new User(firstname, lastname, email, password);
 		
+		//Save user
 		ServiceProvider.getUserService().save(u);
 		
-		return Response.ok("success").build();
+		//Create json response
+		ObjectNode responseNode = mapper.createObjectNode();
+		responseNode.put("response", "success");
+		
+		//Return json response
+		return Response.ok(mapper.writeValueAsString(responseNode)).build();
 	}
 	
+	//Hash sha256 function
 	private String hashSha256(String s){
 		MessageDigest digest;
 		try {

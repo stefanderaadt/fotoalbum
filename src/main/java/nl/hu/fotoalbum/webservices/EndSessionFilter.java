@@ -12,9 +12,10 @@ import nl.hu.fotoalbum.persistence.BaseDAO;
 @Provider
 public class EndSessionFilter implements ContainerResponseFilter{
 
+	//Filter to stop hibernate session at end of request
 	@Override
 	public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException {
-		System.out.println("stop");
+		//System.out.println("stop");
 		BaseDAO.stopSession();
 	}
 
