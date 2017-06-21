@@ -328,6 +328,12 @@ function getPublicAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			//Check if albums exist
+			if(data.length === 0) {
+				$("#publicAlbumsTemplateResult").html("<h2>Nog geen albums gevonden probeer er een toe te voegen met de <b>Nieuw album</b> knop.</h2>");
+				return;
+			}
+			
 			//Print data to screen
 			var source = $("#publicAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
@@ -356,10 +362,12 @@ function getUserAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
-			console.log(data);
-			if(data === null) console.log("null");
-			if(data === "") console.log("leeg");
-			if(data === "{}") console.log("{}");
+			//Check if albums exist
+			if(data.length === 0) {
+				$("#userAlbumsTemplateResult").html("<h2>Nog geen albums gevonden probeer er een toe te voegen met de <b>Nieuw album</b> knop.</h2>");
+				return;
+			}
+			
 			//Print data to screen
 			var source = $("#userAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
@@ -387,10 +395,12 @@ function getSharedAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
-			console.log(data);
-			if(data === null) console.log("null");
-			if(data === "") console.log("leeg");
-			if(data === "{}") console.log("{}");
+			//Check if albums exist
+			if(data.length === 0) {
+				$("#sharedAlbumsTemplateResult").html("<h2>Er zijn nog geen albums met je gedeeld!</h2>");
+				return;
+			}
+			
 			//Print data to screen
 			var source = $("#sharedAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
