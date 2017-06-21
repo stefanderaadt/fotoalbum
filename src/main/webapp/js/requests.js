@@ -109,9 +109,27 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 	// Get upload bar
 	xhr.upload.addEventListener("progress", function(evt) {
 		if (evt.lengthComputable) {
-			percentComplete = evt.loaded / evt.total;
+			percentComplete = evt.loaded / evt.total;		
 			percentComplete = parseInt(percentComplete * 50);
 			printProgressBar(progressBarId, percentComplete);
+			
+			if(percentcomplete === 50){
+				//Change progressbar
+				var add = Math.round(40/length);
+				var counter = 0;
+				timeout = setInterval(function(){
+					counter++;
+					percentComplete += add;
+					printProgressBar(progressBarId, percentComplete);
+
+					if(counter === (length)){
+						if(percentComplete>100){
+							percentComplete=100;
+						}
+						clearTimeout(timeout);
+					}
+				}, 3000);
+			}
 		}
 	}, false);
 
@@ -150,22 +168,6 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 			}
 		}
 	}
-	
-	//Change progressbar
-	var add = Math.round(40/length);
-	var counter = 0;
-	timeout = setInterval(function(){
-		counter++;
-		percentComplete += add;
-		printProgressBar(progressBarId, percentComplete);
-
-		if(counter === (length)){
-			if(percentComplete>100){
-				percentComplete=100;
-			}
-			clearTimeout(timeout);
-		}
-	}, 3000);
 	
 	xhr.send(formData);
 }
