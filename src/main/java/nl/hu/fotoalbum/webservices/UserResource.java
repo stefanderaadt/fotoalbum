@@ -84,6 +84,7 @@ public class UserResource {
 	@POST
 	@Path("/register")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response register(@FormParam("firstname") String firstname, @FormParam("lastname") String lastname,
 			@FormParam("email") String email, @FormParam("password") String password) throws JsonProcessingException {
 		
