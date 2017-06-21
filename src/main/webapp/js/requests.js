@@ -155,8 +155,10 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 		percentComplete += add;
 		printProgressBar(progressBarId, percentComplete);
 
-		if(counter === (length)){
-			percentComplete = 90;
+		if(counter === (length) || percentcomplete > 99){
+			if(percentComplete>100){
+				percentComplete=100;
+			}
 			clearTimeout(timeout);
 		}
 	}, 5000);
