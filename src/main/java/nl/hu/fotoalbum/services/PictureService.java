@@ -8,6 +8,7 @@ import nl.hu.fotoalbum.persistence.PictureDAO;
 public class PictureService {
 	PictureDAO pictureDAO = new PictureDAO();
 	
+	//Save picture
 	public Integer save(Picture p){		
 		//Save album and generate random code
 		String code = generateCode(8);
@@ -19,18 +20,22 @@ public class PictureService {
 		return pictureDAO.save(p);
 	}
 	
+	//Get picture
 	public Picture get(int id){
 		return pictureDAO.get(Picture.class, id);
 	}
 	
+	//Delete picture
 	public void delete(Picture p){
 		pictureDAO.delete(p);
 	}
 	
+	//Get picture by code
 	public Picture getByCode(String code){
 		return pictureDAO.getByCode(code).get(0);
 	}
 	
+	//Generate new code for picture
 	private String generateCode(int length){
 		char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
 		StringBuilder sb = new StringBuilder();

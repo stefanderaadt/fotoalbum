@@ -12,6 +12,7 @@ import nl.hu.fotoalbum.persistence.User;
 public class AlbumService {	
 	AlbumDAO albumDAO = new AlbumDAO();
 	
+	//Save album
 	public Integer save(Album a){
 		//Save album and generate random code
 		String code = generateCode(8);
@@ -23,10 +24,12 @@ public class AlbumService {
 		return albumDAO.save(a);
 	}
 	
+	//Get album by id
 	public Album get(int id){
 		return albumDAO.get(Album.class, id);
 	}
 	
+	//Get album by code
 	public Album getByCode(String code){
 		List <Album> albums = albumDAO.getByCode(code);
 		
@@ -35,10 +38,12 @@ public class AlbumService {
 		return albums.get(0);
 	}
 	
+	//Save or update album
 	public void saveOrUpdate(Album a){
 		albumDAO.saveOrUpdate(a);
 	}
 	
+	//Delete album
 	public void delete(Album a){
 		for(Picture p: a.getPictures()){
 			ServiceProvider.getPictureService().delete(p);
@@ -47,14 +52,17 @@ public class AlbumService {
 		albumDAO.delete(a);
 	}
 	
+	//Get all albums
 	public List<Album> getAll(){
 		return albumDAO.getAll(Album.class);
 	}
 	
+	//Get all public albums
 	public List<Album> getPublic(){
 		return albumDAO.getPublic();
 	}
 	
+	//Get all albums shared with user
 	public List<Album> getSharedWithUser(User u){
 		List<Album> albums =  new ArrayList<Album>();
 		
@@ -65,10 +73,12 @@ public class AlbumService {
 		return albums;
 	}
 	
+	//Get all albums from user
 	public List<Album> getFromUser(int id){
 		return albumDAO.getFromUser(id);
 	}
 	
+	//Get users that have access to album
 	public List<User> getSharedUsers(Album a){
 		List<User> users =  new ArrayList<User>();
 		
@@ -79,6 +89,7 @@ public class AlbumService {
 		return users;
 	}
 	
+	//Generate new code for album
 	private String generateCode(int length){
 		char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
 		StringBuilder sb = new StringBuilder();

@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
 public class UserDAO extends BaseDAO{
+	//Save user - Register
 	public Integer save(User u) {
 		transaction = session.beginTransaction();
 		int id = (int) session.save(u);
@@ -15,6 +16,7 @@ public class UserDAO extends BaseDAO{
 		return id;
 	}
 	
+	//Get user by email
 	public List<User> getByEmail(String email){	
 		String q = "FROM User WHERE email = :email";
 		Query query = session.createQuery(q);
@@ -23,6 +25,7 @@ public class UserDAO extends BaseDAO{
 		return query.getResultList();
 	}
 	
+	//Login user
 	public User login(String email, String password) {
 		String q = "FROM User WHERE email = :email AND password = :password";
 		Query query = session.createQuery(q);

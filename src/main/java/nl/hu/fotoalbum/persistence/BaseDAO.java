@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+//Default hibernate functions
 public class BaseDAO {
 	protected static SessionFactory sessionFactory;
 	protected static Session session;

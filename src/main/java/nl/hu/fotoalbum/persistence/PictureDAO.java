@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
 public class PictureDAO extends BaseDAO {
+	//Save picture
 	public Integer save(Picture p){
 		transaction = session.beginTransaction();
 		Picture s = (Picture) session.save(p);
@@ -15,6 +16,7 @@ public class PictureDAO extends BaseDAO {
 		return s.getId();
 	}
 	
+	//Get picture by code
 	public List<Picture> getByCode(String code) {
 		String q = "FROM Picture WHERE code = :code";
 		Query query = session.createQuery(q);
@@ -23,6 +25,7 @@ public class PictureDAO extends BaseDAO {
 		return query.list();
 	}
 	
+	//Get next id for picture
 	public Integer getNextId(Picture p) {
 	    String q = "FROM Picture WHERE album_id = :albumId";
 	    Query query = session.createQuery(q);
