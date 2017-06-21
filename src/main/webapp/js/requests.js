@@ -90,6 +90,9 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 	//Set up progress bar
 	var percentComplete = 0;
 	printProgressBar(progressBarId, percentComplete);
+	
+	//Update progress bar timeout
+	var timeout;
 
 	// Set up the request.
 	var xhr = new XMLHttpRequest();
@@ -133,8 +136,10 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 			// Display success
 			if (progressBarId === "#uploadAlbumProgressBarResult"){
 				displaySuccess("Nieuw album opgeslagen!");
+				clearTimeout(timeout);
 			}else{
 				displaySuccess("Afbeeldingen geüpload!");
+				clearTimeout(timeout);
 			}
 			
 		} else {
@@ -150,18 +155,18 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 	var add = Math.round(40/length);
 	var counter = 0;
 	
-	var timeout = setInterval(function(){
+	timeout = setInterval(function(){
 		counter++;
 		percentComplete += add;
 		printProgressBar(progressBarId, percentComplete);
 
-		if(counter === (length) || percentcomplete > 99){
+		if(counter === (length)){
 			if(percentComplete>100){
 				percentComplete=100;
 			}
 			clearTimeout(timeout);
 		}
-	}, 5000);
+	}, 3000);
 	
 	xhr.send(formData);
 }
