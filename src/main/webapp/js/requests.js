@@ -113,7 +113,7 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 			percentComplete = parseInt(percentComplete * 50);
 			printProgressBar(progressBarId, percentComplete);
 			
-			if(percentcomplete === 50){
+			if(percentComplete === 50){
 				//Change progressbar
 				var add = Math.round(40/length);
 				var counter = 0;
