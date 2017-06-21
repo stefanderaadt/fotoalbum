@@ -356,6 +356,10 @@ function getUserAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			console.log(data);
+			if(data === null) console.log("null");
+			if(data === "") console.log("leeg");
+			if(data === "{}") console.log("{}");
 			//Print data to screen
 			var source = $("#userAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
@@ -383,6 +387,10 @@ function getSharedAlbums() {
 			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 		},
 		success : function(data) {
+			console.log(data);
+			if(data === null) console.log("null");
+			if(data === "") console.log("leeg");
+			if(data === "{}") console.log("{}");
 			//Print data to screen
 			var source = $("#sharedAlbumsTemplate").html();
 			var template = Handlebars.compile(source);
