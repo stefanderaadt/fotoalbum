@@ -147,7 +147,7 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 	}
 	
 	//Change progressbar
-	var add = Math.round(20/length);
+	var add = Math.round(40/length);
 	var counter = 0;
 	
 	var timeout = setInterval(function(){
@@ -155,7 +155,7 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 		percentComplete += add;
 		printProgressBar(progressBarId, percentComplete);
 
-		if(counter === (length*2)){
+		if(counter === (length)){
 			percentComplete = 90;
 			clearTimeout(timeout);
 		}
