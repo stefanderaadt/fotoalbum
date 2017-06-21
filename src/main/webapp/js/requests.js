@@ -330,7 +330,7 @@ function getPublicAlbums() {
 		success : function(data) {
 			//Check if albums exist
 			if(data.length === 0) {
-				$("#publicAlbumsTemplateResult").html("<h2>Nog geen albums gevonden probeer er een toe te voegen met de <b>Nieuw album</b> knop.</h2>");
+				$("#publicAlbumsTemplateResult").html("<h3>Nog geen albums gevonden probeer er een toe te voegen met de <b>Nieuw album</b> knop.</h3>");
 				return;
 			}
 			
@@ -364,7 +364,7 @@ function getUserAlbums() {
 		success : function(data) {
 			//Check if albums exist
 			if(data.length === 0) {
-				$("#userAlbumsTemplateResult").html("<h2>Nog geen albums gevonden probeer er een toe te voegen met de <b>Nieuw album</b> knop.</h2>");
+				$("#userAlbumsTemplateResult").html("<h3>Nog geen albums gevonden probeer er een toe te voegen met de <b>Nieuw album</b> knop.</h3>");
 				return;
 			}
 			
@@ -397,7 +397,7 @@ function getSharedAlbums() {
 		success : function(data) {
 			//Check if albums exist
 			if(data.length === 0) {
-				$("#sharedAlbumsTemplateResult").html("<h2>Er zijn nog geen albums met je gedeeld!</h2>");
+				$("#sharedAlbumsTemplateResult").html("<h3>Er zijn nog geen albums met je gedeeld!</h3>");
 				return;
 			}
 			
