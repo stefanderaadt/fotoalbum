@@ -4,34 +4,24 @@ var user;
 
 //#################### Alerts functions ####################
 
-function displaySuccess(message){
+function displaySuccess(message, location = "#successTemplateResult"){
 	var data = {};
 	data.message = message;
 	
 	var source = $("#successTemplate").html();
 	var template = Handlebars.compile(source);
 	var html = template(data);
-	$("#successTemplateResult").html(html);
+	$(location).html(html);
 }
 
-function displayError(message){
+function displayError(message, location = "#errorTemplateResult"){
 	var data = {};
 	data.message = message;
 	
 	var source = $("#errorTemplate").html();
 	var template = Handlebars.compile(source);
 	var html = template(data);
-	$("#errorTemplateResult").html(html);
-}
-
-function displayAlbumError(message){
-	var data = {};
-	data.message = message;
-	
-	var source = $("#modalErrorTemplate").html();
-	var template = Handlebars.compile(source);
-	var html = template(data);
-	$("#modalErrorTemplateResult").html(html);
+	$(location).html(html);
 }
 
 //#################### Handlebars helper functions ####################

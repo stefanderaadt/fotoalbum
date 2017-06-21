@@ -21,7 +21,6 @@
 	    <![endif]-->
 	</head>
 	<body>
-		<div id="dropzone" style="display: none"><div class="well well-lg" id="dropzone-message"><h2>Drop je afbeeldingen hier</h2></div></div>
 		<div class="fullwidth-container">
 			<header>
 				<nav class="navbar navbar-default" id="navigation">
@@ -179,7 +178,7 @@
 				<!-- ################# ALBUM PAGE ################# -->
 				<section id="album" style="display: none">					
 					<script id="albumTemplate" type="text/x-handlebars-template">
-						<div class="row">
+						<div class="row album-header" isfromuser="{{isFromUser}}">
 							{{#if isFromUser}}
 								<div class="image col-md-9">
 									<h1 id="edit-title-view">{{title}}</h1>
@@ -264,7 +263,7 @@
 								<div class="image col-md-10">
 									<label for="inputPictures">Voeg afbeeldingen toe: </label> <input type="file"
 									name="pictures" multiple="true" class="form-control-file"
-									aria-describedby="fileHelp" id="addPictures">
+									aria-describedby="fileHelp" id="addPictures" accept="image/*">
 								</div>
 								
 								<div class="image col-md-2 pull-right">
@@ -302,7 +301,7 @@
 				<!-- ################# PICTURE PAGE ################# -->
 				<section id="picture" style="display: none">
 					<script id="pictureTemplate" type="text/x-handlebars-template">
-						<div class="title">
+						<div class="title picture-header" isfromuser="{{isFromUser}}">
 							<div class="col-md-8">
 								<h1>{{album.title}}</h1>
 							</div>
@@ -436,7 +435,7 @@
 									<div class="form-group">
 										<label for="inputPictures">Afbeeldingen</label> <input type="file"
 											name="pictures" multiple="true" class="form-control-file"
-											aria-describedby="fileHelp" id="inputPictures">
+											aria-describedby="fileHelp" id="inputPictures" accept="image/*">
 									</div>
 						
 									<div class="form-group">
