@@ -2,10 +2,8 @@
 $(document).on("click", ".input-share-type", function(){
     if (this.value == 'U') {
     	$(this).parent().parent().find(".select-users-group").show();
-        //$(".select-users-group").show();
     }else{
     	$(this).parent().parent().find(".select-users-group").hide();
-    	//$(".select-users-group").hide();
     }
 });
 
@@ -25,43 +23,6 @@ $(document).on("click", ".add-shared-user-btn", function(){
 
 $(document).on("click", ".delete-shared-users-btn", function() {
 	$(this).parent().parent().remove();
-});
-
-/*var counter = 0;
-
-$('#drop').bind({
-    dragenter: function(ev) {
-        ev.preventDefault(); // needed for IE
-        counter++;
-        $(this).addClass('red');
-    },
-
-    dragleave: function() {
-        counter--;
-        if (counter === 0) { 
-            $(this).removeClass('red');
-        }
-    }
-});*/
-
-// Drop picture events
-$("html").on("drop", function(e) {
-    e.preventDefault();  
-    e.stopPropagation();
-    alert("Dropped!");
-});
-
-var lastenter;
-$("html").on("dragenter", function (event) {
-    lastenter = event.target;
-    $("#dropzone").show();
-});
-
-$("html").on("dragleave", function (event) {
-    if (lastenter === event.target) {
-    	$("#dropzone").hide();
-    	console.log("leave");
-    }
 });
 
 // Edit album events

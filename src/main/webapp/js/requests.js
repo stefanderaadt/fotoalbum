@@ -3,12 +3,23 @@
  */
 
 $("#albumForm").submit(function(e) {
+	//Stop default code
 	e.preventDefault();
 
+	//Get pictures from file selector
 	var pictures = $("#inputPictures").prop("files");
+	
+	//Get form input values
 	var data = $("#albumForm").serialize();
 	var sharedUsers = [];
+	
+	//Check if user selected any images
+	if(pictures.length === 0) {
+		displayError("Er zijn geen afbeeldingen geselecteerd!", "#modalErrorTemplateResult");
+		return;
+	}
 
+	//Get emails from shared users
 	$(this).find(".add-shared-users-table").find("tr").each(
 			function() {
 				var columns = $(this).find('td');
@@ -17,6 +28,7 @@ $("#albumForm").submit(function(e) {
 
 	data += "&sharedusers=" + JSON.stringify(sharedUsers);
 
+	//Post album data to the back-end
 	$.ajax({
 		type : "POST",
 		url : "rest/album",
@@ -28,27 +40,59 @@ $("#albumForm").submit(function(e) {
 					'Bearer ' + token);
 		},
 		success : function(data) {
+			//On success upload pictures to the new album
 			uploadPictures(pictures, data.code);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
+			//Send error message to user
+			displayError("Er is iets fout gegaan met het opslaan van dit album.", "#modalErrorTemplateResult");
 		}
 	});
 
 });
 
 // Upload pictures
-function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgressBarResult") {
+function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgressBarResult") {	
+	var length = pictures.length;
+	
+	//Check if user selected any files
+	if(length === 0){
+		if (progressBarId === "#uploadAlbumProgressBarResult"){
+			displayError("Er zijn geen afbeeldingen geselecteerd!", "#modalErrorTemplateResult");
+			return;
+		}else{
+			displayError("Er zijn geen afbeeldingen geselecteerd!");
+			return;
+		}
+	}
+	
 	var formData = new FormData();
-	var percentComplete = 0;
-	printProgressBar(progressBarId, percentComplete);
 
-	for (var i = 0; i < pictures.length; i++) {
+	//Add pictures to formdata and check filetype
+	for (var i = 0; i < length; i++) {
 		var file = pictures[i];
+		
+		var ext = file.name.split('.').pop().toLowerCase();
+		if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+			if (progressBarId === "#uploadAlbumProgressBarResult"){
+				displayError("Alleen gif, png, jpg en jpeg bestanden zijn toegestaan.", "#modalErrorTemplateResult");
+				return;
+			}else{
+				displayError("Alleen gif, png, jpg en jpeg bestanden zijn toegestaan.");
+				return;
+			}
+		}
 
 		// Add the file to the request.
 		formData.append(file.name, file);
 	}
+	
+	//Set up progress bar
+	var percentComplete = 0;
+	printProgressBar(progressBarId, percentComplete);
+	
+	//Update progress bar timeout
+	var timeout;
 
 	// Set up the request.
 	var xhr = new XMLHttpRequest();
@@ -92,38 +136,39 @@ function uploadPictures(pictures, albumCode, progressBarId = "#uploadAlbumProgre
 			// Display success
 			if (progressBarId === "#uploadAlbumProgressBarResult"){
 				displaySuccess("Nieuw album opgeslagen!");
+				clearTimeout(timeout);
 			}else{
 				displaySuccess("Afbeeldingen geüpload!");
+				clearTimeout(timeout);
 			}
 			
 		} else {
-			displayAlbumError("Er is iets fout gegaan met het opslaan van dit album.");
+			if (progressBarId === "#uploadAlbumProgressBarResult"){
+				displayError("Er is iets fout gegaan met het opslaan van dit album.", "#modalErrorTemplateResult");
+			}else{
+				displayError("Er is iets fout gegaan met het uploaden van de afbeeldingen.");
+			}
 		}
-		
-		//Stop interval
-		//clearInterval(uploadStatusInterval);
 	}
-
-	xhr.send(formData);
-}
-
-function getUploadStatus(){
-	console.log("interval");
 	
-	$.ajax({
-		type : "GET",
-		url : "rest/picture/uploadstatus",
-		beforeSend : function(xhr) {
-			var token = window.sessionStorage.getItem("sessionToken");
-			xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-		},
-		success : function(data) {
-			console.log(data);
-		},
-		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(xhr);
+	//Change progressbar
+	var add = Math.round(40/length);
+	var counter = 0;
+	
+	timeout = setInterval(function(){
+		counter++;
+		percentComplete += add;
+		printProgressBar(progressBarId, percentComplete);
+
+		if(counter === (length)){
+			if(percentComplete>100){
+				percentComplete=100;
+			}
+			clearTimeout(timeout);
 		}
-	});
+	}, 3000);
+	
+	xhr.send(formData);
 }
 
 /*
@@ -177,8 +222,8 @@ $(document).on("click", "#album-save-btn", function() {
 $(document).on("click", "#album-picture-save-btn", function(){
 	var code = $(this).attr("code");
 	
-	var pictures = $(this).parent().find("#addPictures").prop("files");
-	
+	var pictures = $(this).parent().parent().find("#addPictures").prop("files");
+
 	uploadPictures(pictures, code, "#uploadPicturesProgressBarResult");
 });
 

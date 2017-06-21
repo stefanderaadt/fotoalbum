@@ -21,6 +21,15 @@
 	}
 }
 
+#album .images [class*="col-"]{
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
+}
+
+#album .images{
+	overflow: hidden;
+}
+
 #album .image {
 	padding: 8px;
 	position: relative;
@@ -88,35 +97,6 @@
 	.title .btn, #picture .btn{
 		width: 100%;
 	}
-}
-
-/* Drag drop */
-#dropzone{
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	z-index: 100;
-	background-color: rgba(50, 50, 50, 0.5);
-}
-
-#dropzone-message{
-	position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0; 
-    
-    width: 30%;
-    height: 30%;  
-
-    margin: auto;
-}
-
-#dropzone-message h2{
-	text-align: center;
 }
 
 /* Default styles */
