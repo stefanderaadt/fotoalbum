@@ -21,6 +21,15 @@
 	}
 }
 
+#album .images [class*="col-"]{
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
+}
+
+#album .images{
+	overflow: hidden;
+}
+
 #album .image {
 	padding: 8px;
 	position: relative;
