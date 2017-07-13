@@ -63,7 +63,7 @@ public class AlbumResource {
 
 	//Get album by code
 	@GET
-	@RolesAllowed("user")
+	//@RolesAllowed("user")
 	@Path("{code}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAlbum(@PathParam("code") String code, @Context ContainerRequestContext requestCtx) throws JsonProcessingException {
@@ -175,7 +175,7 @@ public class AlbumResource {
 
 	//Get public albums
 	@GET
-	@RolesAllowed("user")
+	//@RolesAllowed("user")
 	@Path("public")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getPublicAlbums() throws JsonProcessingException {
@@ -185,7 +185,7 @@ public class AlbumResource {
 	
 	//Get shared albums
 	@GET
-	@RolesAllowed("user")
+	//@RolesAllowed("user")
 	@Path("shared")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAlbumsSharedWithUser(@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
@@ -200,7 +200,7 @@ public class AlbumResource {
 	}
 	
 	@GET
-	@RolesAllowed("user")
+	//@RolesAllowed("user")
 	@Path("user")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserAlbums(@Context ContainerRequestContext requestCtx) throws JsonProcessingException {
